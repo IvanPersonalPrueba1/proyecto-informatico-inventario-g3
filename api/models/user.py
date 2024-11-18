@@ -111,3 +111,4 @@ class User():
             'exp': exp_timestamp
         }, app.config['SECRET_KEY'], algorithm = "HS256")
         return {"token": token, "username": auth.username, "id": row[0]}
+# ---------------------------------------------------------------------*----------------------------------------------
