@@ -6,14 +6,26 @@ class Stock:
         "quantity": int  # Solo necesitamos validar 'quantity' en la entrada
     }
 
+    @classmethod
+    def validate(cls, data):
+        if data is None or type(data) != dict:
+            logging.error(f"Validation failed: data is None or not a dict. Data: {data}")
+            return False
+        for key in cls.schema:
+            if key not in data:
+                logging.error(f"Validation failed: key '{key}' not in data. Data: {data}")
+                return False
+            if type(data[key]) != cls.schema[key]:
+                logging.error(f"Validation failed: key '{key}' type mismatch. Expected {cls.schema[key]}, got {type(data[key])}. Data: {data}")
+                return False
+        return True
+
     def __init__(self, data):
-        self.id = data[0]  # ID de la tabla stock
-        self.producto_id = data[1]
-        self.cantidad = data[2]
+        self.producto_id = data[0]
+        self.cantidad = data[1]
 
     def to_json(self):
         return {
-            "id": self.id,
             "producto_id": self.producto_id,
             "cantidad": self.cantidad
         }
