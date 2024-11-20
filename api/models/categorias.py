@@ -1,31 +1,16 @@
 from api.db.db_config import get_db_connection, DBError
 from api import app
+from api.models.base import BaseModel
 
-class Category():
+class Category(BaseModel):
     schema = {
         "name": str
     }
-
-    @classmethod
-    def validate(cls, data):
-        if data == None or type(data) != dict:
-            return False
-        for key in cls.schema:
-            if key not in data:
-                return False
-            if type(data[key]) != cls.schema[key]:
-                return False
-        return True
 
     def __init__(self, data):
         self._id = data[0]
         self._name = data[1]
 
-    def to_json(self):
-        return {
-            "id": self._id,
-            "name": self._name
-        }
 
     @classmethod
     def get_categories(cls):
@@ -36,11 +21,7 @@ class Category():
         cursor.close()
         connection.close()
         
-        if len(data) > 0:
-            lista = []
-            for fila in data:
-                objeto = Category(fila).to_json()
-                lista.append(objeto)
-            return lista
-        
-        raise DBError("No existe el recurso solicitado")
+        if not data:
+            raise DBError("No existe el recurso solicitado")
+
+        return [cls(fila).to_json() for fila in data]

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from api.models.categorias import Category
-from api.db.db_config import DBError
+from api.db.db_config import get_db_connection,DBError
 
 category_routes = Blueprint('category_routes', __name__)
 
@@ -18,18 +18,21 @@ def get_categories():
 def create_category():
     data = request.get_json()
 
+    # Valida los datos antes de intentar crear una categoría
     if not Category.validate(data):
         return jsonify({"error": "Datos inválidos"}), 400
 
-    new_category = Category(data)
+    # Crea la categoría directamente desde los datos validados
+    name = data.get("name")
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute(
-        'INSERT INTO categories (name) VALUES (%s)', 
-        (new_category._name,)
-    )
-    connection.commit()
-    cursor.close()
-    connection.close()
+
+    try:
+        cursor.execute('INSERT INTO categories (name) VALUES (%s)', (name,))
+        connection.commit()
+    finally:
+        cursor.close()
+        connection.close()
 
     return jsonify({"message": "Categoría creada exitosamente"}), 201
+

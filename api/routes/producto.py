@@ -1,28 +1,33 @@
-from flask import Blueprint, request, jsonify
+from api import app
 from api.models.producto import Product
-from api.db.db_config import DBError
-
-product_routes = Blueprint('product_routes', __name__)
+from flask import jsonify, request
+from api.utils.security import token_required
+from api.db.db_config import get_db_connection, DBError
 
 # Ruta para obtener todos los productos de un usuario
-@product_routes.route('/products/<int:id_user>', methods=['GET'])
-def get_products(id_user):
+@app.route('/products', methods=['GET'])
+@token_required
+def get_products():
+    user_id = request.user_id
     try:
-        products = Product.get_products_by_user(id_user)
+        products = Product.get_products_by_user(user_id)
         return jsonify({"data": products}), 200
     except DBError as e:
         return jsonify({"error": str(e)}), 404
 
 # Ruta para crear un nuevo producto
-@product_routes.route('/products', methods=['POST'])
+@app.route('/products', methods=['POST'])
+@token_required
 def create_product():
     data = request.get_json()
     
     if not Product.validate(data):
         return jsonify({"error": "Datos inválidos"}), 400
     
-    # Suponiendo que el usuario está logueado y se obtiene su id
-    id_user = 1  # Esto debería cambiar con la lógica de autenticación.
+    id_user = getattr(request, "user_id", None)  
+    
+    if not id_user:
+        return jsonify({"error": "Usuario no autenticado"}), 401
     
     new_product = Product(data)
     connection = get_db_connection()
