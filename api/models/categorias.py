@@ -13,10 +13,10 @@ class Category(BaseModel):
 
 
     @classmethod
-    def get_categories(cls):
+    def get_categories(cls, usuario_id):
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('SELECT * FROM categories')
+        cursor.execute('SELECT * FROM categorias WHERE usuario_id = %s', (usuario_id,))
         data = cursor.fetchall()
         cursor.close()
         connection.close()

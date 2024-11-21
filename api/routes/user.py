@@ -8,16 +8,16 @@ from api.db.db_config import DBError
 def register():
     data = request.get_json()
     try:
-        user = User.register(data)
-        return jsonify( user ), 201
+        response = User.register(data)
+        return jsonify(response), 201  
     except Exception as e:
         if isinstance(e, DBError):
             info = e.args[0]
             return jsonify(info), info["code"]
-        return jsonify( {"message": e.args[0]} ), 400
+        return jsonify({"message": e.args[0]}), 400
     
 @app.route('/login', methods=['POST'])
-def register_user():
+def login():
     auth = request.authorization
     try:
         user = User.login(auth)

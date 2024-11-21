@@ -9,3 +9,5 @@ def test():
     return jsonify({"message" : "test ok"})
 
 import api.routes.producto
+import api.routes.categorias
+import api.routes.user

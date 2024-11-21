@@ -1,14 +1,8 @@
-from flask import Flask
-from api.routes. producto import product_routes
-from api.routes.categorias import category_routes
-from api.routes.user import user_routes
+from api import app
+import os
 
-app = Flask(__name__)
-
-# Registrar las rutas
-app.register_blueprint(product_routes)
-app.register_blueprint(category_routes)
-app.register_blueprint(user_routes)
+host = os.environ.get("HOST", "localhost")
+port = int(os.environ.get("PORT", 5001))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.environ.get('FLASK_ENV') == 'development', host=host, port=port)
