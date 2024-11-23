@@ -21,7 +21,7 @@ def update_stock(id_user, producto_id):
         
         return jsonify(result), 200
     except DBError as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 400
 
 
 # Ruta para verificar productos con bajo stock
@@ -37,7 +37,7 @@ def check_low_stock(id_user):
         
         return jsonify({"data": low_stock_products}), 200
     except DBError as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 400
 
 
 # Ruta para obtener todos los productos en stock según usuario
@@ -48,4 +48,4 @@ def get_stock_by_user(id_user):
         stock = Stock.get_stock_by_user(id_user)
         return jsonify(stock), 200
     except Exception as e:
-        return jsonify({"message": e.args[0]}), 500
+        return jsonify({"message": e.args[0]}), 400

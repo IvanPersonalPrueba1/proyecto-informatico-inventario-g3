@@ -10,3 +10,4 @@ def test():
 
 import api.routes.stock
 import api.routes.user
+import api.routes.porveedor
