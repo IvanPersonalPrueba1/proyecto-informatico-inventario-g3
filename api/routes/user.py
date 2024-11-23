@@ -1,9 +1,8 @@
 from api import app
 from api.models.user import User
-from flask import Blueprint, request, jsonify
+from flask import jsonify, request
 from api.db.db_config import DBError
 
-user_routes = Blueprint('user_routes', __name__)
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -27,5 +26,4 @@ def register_user():
         if isinstance(e, DBError):
             info = e.args[0]
             return jsonify(info), info["code"]
-        return jsonify( {"message": e.args[0]} ), 400
-# ---------------------------------------------------------------------*----------------------------------------------
+        return jsonify( {"message": e.args[0]} ), 400  

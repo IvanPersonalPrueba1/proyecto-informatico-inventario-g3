@@ -1,5 +1,5 @@
 from api.db.db_config import get_db_connection, DBError
-import logging
+from api import app
 
 class Stock:
     schema = {
@@ -7,23 +7,24 @@ class Stock:
     }
 
     @classmethod
-    def validate(cls, data):
-        if data is None or type(data) != dict:
-            logging.error(f"Validation failed: data is None or not a dict. Data: {data}")
+    def validate(cls,data):
+        if data == None or type(data) != dict:
             return False
+        # Control: data contiene todas las claves?
         for key in cls.schema:
             if key not in data:
-                logging.error(f"Validation failed: key '{key}' not in data. Data: {data}")
                 return False
+            # Control: cada valor es del tipo correcto?
             if type(data[key]) != cls.schema[key]:
-                logging.error(f"Validation failed: key '{key}' type mismatch. Expected {cls.schema[key]}, got {type(data[key])}. Data: {data}")
                 return False
         return True
 
+    # Constructor base 
     def __init__(self, data):
         self.producto_id = data[0]
         self.cantidad = data[1]
 
+    # Conversión a objeto JSON
     def to_json(self):
         return {
             "producto_id": self.producto_id,
@@ -31,18 +32,21 @@ class Stock:
         }
 
     @classmethod
-    def update_stock(cls, producto_id, new_quantity):
+    def update_stock(cls, id_user, producto_id, new_quantity):
         """
-        Actualiza la cantidad de productos en stock.
+        Actualiza la cantidad de productos en stock asociados a un usuario específico.
         """
         connection = get_db_connection()
         cursor = connection.cursor()
         
         try:
             cursor.execute(
-                'UPDATE stock SET cantidad = %s WHERE producto_id = %s',
-                (new_quantity, producto_id)
+                'UPDATE stock SET cantidad = %s WHERE producto_id = %s AND id_user = %s',
+                (new_quantity, producto_id, id_user)
             )
+            if cursor.rowcount == 0:
+                raise DBError("El producto no existe o no pertenece al usuario")
+            
             connection.commit()
             cursor.close()
             connection.close()
@@ -52,19 +56,22 @@ class Stock:
             connection.close()
             raise DBError(f"Error actualizando el stock: {e}")
         
-        return {"message": "Stock actualizado exitosamente"}
+        return {"message": "Stock actualizado exitosamente"} 
 
     @classmethod
-    def check_low_stock(cls, threshold=10):
+    def check_low_stock(cls, id_user, threshold=10):
         """
-        Verifica si algún producto tiene stock bajo.
+        Verifica si algún producto asociado al usuario tiene stock bajo.
         Retorna una lista de productos con stock bajo.
         """
         connection = get_db_connection()
         cursor = connection.cursor()
         
         try:
-            cursor.execute('SELECT * FROM stock WHERE cantidad <= %s', (threshold,))
+            cursor.execute(
+                'SELECT * FROM stock WHERE cantidad <= %s AND id_user = %s',
+                (threshold, id_user)
+            )
             data = cursor.fetchall()
             cursor.close()
             connection.close()
@@ -79,8 +86,9 @@ class Stock:
             connection.close()
             raise DBError(f"Error verificando stock bajo: {e}")
 
+
     @classmethod
-    def get_all_stock(cls):
+    def get_stock_by_user(cls, id_user):
         """
         Obtiene todos los productos en stock.
         """
@@ -88,7 +96,7 @@ class Stock:
         cursor = connection.cursor()
         
         try:
-            cursor.execute('SELECT * FROM stock')
+            cursor.execute('SELECT * FROM stock WHERE id_user = %s', (id_user,))
             data = cursor.fetchall()
             cursor.close()
             connection.close()

@@ -53,11 +53,13 @@ class User():
         username = data["username"]
         password = data["password"]
 
+
         # Buscar si existe un usuario con el mismo nombre
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('SELECT id FROM users WHERE username = %s', (username,))
+        cursor.execute('SELECT id FROM usuarios WHERE username = %s', (username,))
         row = cursor.fetchone()
+
 
         if row is not None:
             raise DBError({"message": "Ya existe un usuario con ese nombre", "code": 400})
@@ -66,7 +68,7 @@ class User():
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         
         # Guardar el usuario en la base de datos con la contraseña hasheada        
-        cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, hashed_password))
+        cursor.execute('INSERT INTO usuarios (username, password) VALUES (%s, %s)', (username, hashed_password))
         connection.commit()
 
 
@@ -75,8 +77,9 @@ class User():
         row = cursor.fetchone()
         id = row[0]
 
+
         # Recuperar el objeto creado
-        cursor.execute('SELECT * FROM users WHERE id = %s', (id, ))
+        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (id, ))
         nuevo = cursor.fetchone()
         cursor.close()
         connection.close()
@@ -92,7 +95,7 @@ class User():
         connection = get_db_connection()
         cursor = connection.cursor()
         # Buscar el usuario por nombre de usuario
-        cursor.execute('SELECT id, username, password FROM users WHERE username = %s', (auth.username,))
+        cursor.execute('SELECT id, username, password FROM usuarios WHERE username = %s', (auth.username,))
         row = cursor.fetchone()
 
 
@@ -111,4 +114,3 @@ class User():
             'exp': exp_timestamp
         }, app.config['SECRET_KEY'], algorithm = "HS256")
         return {"token": token, "username": auth.username, "id": row[0]}
-# ---------------------------------------------------------------------*----------------------------------------------

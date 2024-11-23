@@ -1,12 +1,6 @@
-from flask import Flask
-from api.routes.user import user_routes
-from api.routes.stock import stock_routes  
+from api  import app
+import os  
 
-app = Flask(__name__)
-
-# Registrar las rutas sin prefijos
-app.register_blueprint(stock_routes)
-app.register_blueprint(user_routes)
-
+# Para desarrollo:
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host=os.environ.get("HOST", "localhost"), port=int(os.environ.get("PORT", 5000)))
