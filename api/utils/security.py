@@ -18,19 +18,19 @@ def token_required(func):
         if not token:
             return jsonify({"message": "Falta el token"}), 401
 
-        id_user = None
+        user_id = None
  
         # Verificar si 'id_user' está en los argumentos de la ruta
         print("Argumentos de la solicitud: ", kwargs)
-        if 'id_user' in kwargs:
-            id_user = kwargs['id_user']
+        if 'user_id' in kwargs:
+            user_id = kwargs['user_id']
 
-        if id_user is None:
+        if user_id is None:
             # Si no está en la ruta, buscar en los headers
-            if 'id_user' in request.headers:
-                id_user = request.headers['id_user']
+            if 'user_id' in request.headers:
+                user_id = request.headers['user_id']
 
-        if id_user is None:
+        if user_id is None:
             # Si no se encuentra, denegar el acceso
             return jsonify({"message": "Falta el usuario"}), 401
 
@@ -39,7 +39,7 @@ def token_required(func):
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
             token_id = data['id']
 
-            if int(id_user) != int(token_id):
+            if int(user_id) != int(token_id):
                 return jsonify({"message": "Error de id"}), 401
         except Exception as e:
             print(e)
