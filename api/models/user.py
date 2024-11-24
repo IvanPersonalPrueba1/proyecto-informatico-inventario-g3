@@ -16,15 +16,16 @@ class User():
 
 
     @classmethod
-    def validate(cls,data):
-        if data == None or type(data) != dict:
+    def validate(cls, data):
+        if data is None or not isinstance(data, dict):
             return False
         for key in cls.schema:
             if key not in data:
                 return False
-            if type(data[key]) != cls.schema[key]:
+            if not isinstance(data[key], cls.schema[key]):
                 return False
         return True
+
     
     def __init__(self, data):
         self._id = data[0]
@@ -42,7 +43,6 @@ class User():
     @classmethod
     def register(cls, data):
 
-
         if not cls.validate(data):
             raise DBError({"message": "Campos/valores inválidos", "code": 400})
         
@@ -51,14 +51,14 @@ class User():
 
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('SELECT id FROM usuarios WHERE username = %s', (username,))
+        cursor.execute('SELECT id FROM users WHERE username = %s', (username,))
         row = cursor.fetchone()
 
         if row is not None:
             raise DBError({"message": "Ya existe un usuario con ese nombre", "code": 400})
         
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        cursor.execute('INSERT INTO usuarios (username, password) VALUES (%s, %s)', (username, hashed_password))
+        cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, hashed_password))
         connection.commit()
 
 
@@ -66,22 +66,12 @@ class User():
         row = cursor.fetchone()
         id = row[0]
 
-        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (id, ))
+        cursor.execute('SELECT * FROM users WHERE id = %s', (id, ))
         nuevo = cursor.fetchone()
         cursor.close()
         connection.close()
 
-        exp_timestamp = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=5)).timestamp()
-        token = jwt.encode({
-            'username': username,
-            'id': id,
-            'exp': exp_timestamp
-        }, app.config['SECRET_KEY'], algorithm="HS256")
-
-        return {
-            "user": User(nuevo).to_json(),
-            "token": token
-        }
+        return User(nuevo).to_json()
             
     @classmethod
     def login(cls, auth):
@@ -90,13 +80,13 @@ class User():
 
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('SELECT id, username, password FROM usuarios WHERE username = %s', (auth.username,))
+        cursor.execute('SELECT id, username, password FROM users WHERE username = %s', (auth.username,))
         row = cursor.fetchone()
 
         if not row or not check_password_hash(row[2], auth.password):
             raise DBError({"message": "No autorizado", "code": 401})
 
-        exp_timestamp = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=5)).timestamp()
+        exp_timestamp = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=120)).timestamp()
 
         token = jwt.encode({
             'username': auth.username,
