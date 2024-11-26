@@ -9,6 +9,7 @@ app.config['SECRET_KEY'] = "clave_app"
 
 
 class User():
+    # Esquema de validación para los datos de usuario
     schema = {
         "username": str,
         "password" : str
@@ -17,6 +18,18 @@ class User():
 
     @classmethod
     def validate(cls,data):
+        """ 
+        Valida los datos del usuario contra el esquema definido. 
+
+        Verifica que todos los campos están presentes y tienen el tipo correcto.
+
+        Parámetros:
+        - data: Diccionario con los datos a validar.
+
+        Retorna:
+        - True si los datos son válidos, False en caso contrario.
+        """
+
         if data == None or type(data) != dict:
             return False
         # Control: data contiene todas las claves?
@@ -30,6 +43,14 @@ class User():
     
     # Constructor base (se tiene en cuenta el orden de las columnas en la base de datos!)
     def __init__(self, data):
+        """ 
+        Inicializa un objeto User con los datos proporcionados. 
+
+        Parámetros:
+        - data: Tupla con los datos del usuario en el siguiente orden:
+                (id, username, password)
+        """
+
         self._id = data[0]
         self._username = data[1]
         self._password = data[2]
@@ -37,6 +58,13 @@ class User():
 
     # Conversión a objeto JSON
     def to_json(self):
+        """ 
+        Convierte el objeto User a un diccionario JSON. 
+
+        Retorna:
+        - Diccionario con los datos del usuario en formato JSON.
+        """
+
         return {
             "id": self._id,
             "username": self._username,
@@ -45,11 +73,28 @@ class User():
     
     @classmethod
     def register(cls, data):
+        """
+        Registra un nuevo usuario en la base de datos.
 
+        Valida los datos del usuario, verifica que no exista ya un usuario con el mismo nombre,
+        genera un hash de la contraseña y guarda el nuevo usuario en la base de datos.
+        Retorna el usuario registrado en formato JSON.
 
+        Parámetros:
+        - data: Diccionario con los datos del usuario (username, password).
+
+        Levanta:
+        - DBError: Si los datos no son válidos, si ya existe un usuario con el mismo nombre,
+        o si hay un error durante el registro en la base de datos.
+
+        Retorna:
+        - Un diccionario con los datos del usuario registrado en formato JSON.
+        """
+
+        # Validar los datos del usuario
         if not cls.validate(data):
             raise DBError({"message": "Campos/valores inválidos", "code": 400})
-        
+               
         username = data["username"]
         password = data["password"]
 
@@ -87,6 +132,22 @@ class User():
     
     @classmethod
     def login(cls, auth):
+        """
+        Autentica a un usuario y genera un token JWT.
+
+        Valida los datos de autenticación, verifica que el usuario exista y que la contraseña sea correcta.
+        Genera un token JWT para el usuario autenticado y lo retorna junto con el nombre de usuario y el ID.
+
+        Parámetros:
+        - auth: Objeto que contiene los datos de autenticación (username, password).
+
+        Levanta:
+        - DBError: Si los datos de autenticación son inválidos, si el usuario no existe, 
+        o si la contraseña es incorrecta.
+
+        Retorna:
+        - Un diccionario con el token JWT, el nombre de usuario y el ID del usuario.
+        """
         
         if not auth or not auth.username or not auth.password:
             raise DBError({"message": "No autorizado", "code": 401})

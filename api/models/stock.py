@@ -11,7 +11,14 @@ class Stock:
     def validate(cls, data):
         """
         Valida que los datos proporcionados contengan solo 'quantity'.
+
+        Parámetros:
+        - data: Diccionario con los datos a validar.
+
+        Retorna:
+        - True si los datos son válidos, False en caso contrario.
         """
+
         if data is None or not isinstance(data, dict):
             return False
 
@@ -27,12 +34,26 @@ class Stock:
 
     # Constructor base
     def __init__(self, data):
+        """
+        Inicializa un objeto Stock con los datos proporcionados.
+
+        Parámetros:
+        - data: Tupla con los datos del stock (product_id, product_name, quantity).
+        """
+        
         self.product_id = data[0]
         self.product_name = data[1]
         self.quantity = data[2]
 
     # Conversión a objeto JSON
     def to_json(self):
+        """ 
+        Convierte el objeto Stock a un diccionario JSON. 
+
+        Retorna:
+        - Diccionario con los dato de stock en formato JSON.
+        """
+            
         return {
             "product_id": self.product_id,
             "product_name": self.product_name,
@@ -43,7 +64,20 @@ class Stock:
     def update_stock(cls, user_id, product_id, new_quantity):
         """
         Actualiza la cantidad de productos en stock asociados a un usuario específico.
+
+        Parámetros:
+        - user_id: ID del usuario autenticado.
+        - product_id: ID del producto.
+        - new_quantity: Nueva cantidad para el producto.
+
+        Levanta:
+        - DBError: Si la nueva cantidad es menor o igual a 0, si el producto no existe o no pertenece al usuario,
+        o si hay un error durante la actualización en la base de datos.
+
+        Retorna:
+        - Un mensaje indicando el resultado de la actualización del stock.
         """
+
         if new_quantity <= 0:
             raise DBError("La cantidad debe ser mayor a 0")
 
@@ -84,7 +118,19 @@ class Stock:
         """
         Verifica si algún producto asociado al usuario tiene stock bajo.
         Retorna una lista de productos con stock bajo.
+
+        Parámetros:
+        - user_id: ID del usuario autenticado.
+        - threshold: Umbral de cantidad para considerar el stock como bajo (por defecto es 10).
+
+        Levanta:
+        - DBError: Si hay algún error durante la consulta en la base de datos.
+
+        Retorna:
+        - Una lista de diccionarios con los detalles de los productos con stock bajo,
+        o un mensaje si no hay productos con stock bajo.
         """
+
         connection = get_db_connection()
         cursor = connection.cursor()
         
@@ -110,8 +156,22 @@ class Stock:
     @classmethod
     def get_stock_by_user(cls, user_id):
         """
-        Obtiene todos los productos en stock de un usuario específico, incluyendo el nombre del producto.
+        Obtiene el stock de todos los productos asociados a un usuario específico.
+
+        Consulta la base de datos para obtener el ID, nombre y cantidad de cada producto en stock para el usuario autenticado.
+        Retorna una lista de productos en formato JSON.
+
+        Parámetros:
+        - user_id: ID del usuario autenticado.
+
+        Levanta:
+        - DBError: Si hay algún error durante la consulta en la base de datos.
+
+        Retorna:
+        - Una lista de diccionarios con los detalles de los productos en stock, 
+        o un mensaje si no hay productos en stock.
         """
+
         connection = get_db_connection()
         cursor = connection.cursor()
         

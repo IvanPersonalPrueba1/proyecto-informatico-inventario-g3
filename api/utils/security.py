@@ -6,6 +6,20 @@ from api.db.db_config import get_db_connection, DBError
 
 
 def token_required(func):
+    """
+    Decorador que verifica la autenticación basada en token.
+
+    Verifica la presencia y validez del token JWT en los headers de la solicitud,
+    así como la coincidencia del user_id con el token. Si la verificación falla,
+    retorna un mensaje de error y un código de estado 401 (No autorizado).
+
+    Parámetros:
+    - func: La función que se va a decorar y proteger con la verificación del token.
+
+    Retorna:
+    - La función decorada con la verificación del token.
+    """
+
     @wraps(func)
     def decorated(*args, **kwargs):
         print(kwargs)
