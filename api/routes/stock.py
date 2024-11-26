@@ -45,7 +45,7 @@ def check_low_stock(user_id):
 @token_required
 def get_stock_by_user(user_id):
     try:
-        stock = Stock.get_stock_by_user(user_id)
-        return jsonify(stock), 200
+        all_stock = Stock.get_stock_by_user(user_id)
+        return jsonify(all_stock), 200
     except Exception as e:
         return jsonify({"message": e.args[0]}), 400

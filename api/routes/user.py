@@ -17,7 +17,7 @@ def register():
         return jsonify( {"message": e.args[0]} ), 400
     
 @app.route('/login', methods=['POST'])
-def register_user():
+def login():
     auth = request.authorization
     try:
         user = User.login(auth)

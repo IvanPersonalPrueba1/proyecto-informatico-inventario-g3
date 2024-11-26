@@ -1,4 +1,4 @@
-from api  import app
+from api import app
 import os  
 
 # Para desarrollo:

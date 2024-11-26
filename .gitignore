@@ -1,0 +1,34 @@
+# Entornos virtuales
+.venv/
+env/
+
+# Archivos de configuración de IDE/editor
+.vscode/
+.idea/
+
+# Archivos de Python
+_pycache_/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.dist-info/
+
+# Archivos de configuración sensibles
+.env
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Archivos de base de datos locales
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Archivos de pruebas y cobertura
+.coverage

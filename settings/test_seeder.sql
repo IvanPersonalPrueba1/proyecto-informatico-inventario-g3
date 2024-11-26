@@ -20,5 +20,17 @@ INSERT INTO productos (nombre, precio, categoria_id, id_usuario) VALUES
 ('Producto C', 300, 2, 2),
 ('Producto D', 400, 2, 2);
 
+-- Insertar datos en la tabla stock
+INSERT INTO stock (product_id, quantity, user_id, product_name) VALUES
+(1, 100, 1, 'Laptop'),
+(2, 200, 1, 'Smartphone'),
+(3, 300, 1, 'T-Shirt'),
+(4, 150, 1, 'Jeans'),
+(5, 80, 1, 'Novel'),
+(6, 50, 2, 'Textbook'),
+(7, 60, 2, 'Chair'),
+(8, 30, 2, 'Desk'),
+(9, 40, 1, 'Mouse'),
+(10, 70, 1, 'Keyboard');
 
 

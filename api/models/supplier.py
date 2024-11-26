@@ -163,7 +163,7 @@ class Supplier:
             connection.rollback()
             cursor.close()
             connection.close()
-            raise DBError(f"Error asociando producto al proveedor: {e}")
+            raise DBError(f"{e}")
 
 
     @classmethod
@@ -221,3 +221,38 @@ class Supplier:
             connection.close()
             raise DBError(f"Error obteniendo los proveedores: {e}")
 
+
+    @classmethod
+    def get_suppliers_by_user(cls, user_id):
+        """
+        Obtiene el ID y el nombre de todos los proveedores asociados a un usuario.
+        """
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        try:
+            # Consultar IDs y nombres de los proveedores asociados al usuario
+            cursor.execute(
+                '''
+                SELECT id, name_supplier 
+                FROM suppliers 
+                WHERE user_id = %s
+                ''',
+                (user_id,)
+            )
+            suppliers = cursor.fetchall()
+            cursor.close()
+            connection.close()
+
+            if suppliers:
+                supplier_list = [
+                    {"id": row[0], "name_supplier": row[1]}
+                    for row in suppliers
+                ]
+                return supplier_list
+            
+            return {"message": "No hay proveedores asociados a este usuario"}
+        except Exception as e:
+            cursor.close()
+            connection.close()
+            raise DBError(f"Error obteniendo los proveedores: {e}")

@@ -28,6 +28,7 @@ CREATE TABLE products (
 -- Crear tabla de stock
 CREATE TABLE stock (
     product_id INT NOT NULL PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
     user_id INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,

@@ -19,7 +19,6 @@ def create_supplier(user_id):
 @token_required
 def add_product_to_supplier(user_id, supplier_id, product_id):
     try:
-        print(f"Llamando a Proveedor.add_product_to_supplier con: user_id={user_id}, supplier_id={supplier_id}, product_id={product_id}")
         Supplier.add_product_to_supplier(user_id=user_id, supplier_id=supplier_id, product_id=product_id)
         return jsonify({"message": "Producto asociado al proveedor correctamente"}), 200
     except Exception as e:
@@ -38,3 +37,14 @@ def get_proveedores_by_producto(user_id, product_id):
         return jsonify({"message": e.args[0]}), 400
 
 
+@app.route('/user/<int:user_id>/suppliers', methods=['GET'])
+@token_required
+def get_suppliers_by_user(user_id):
+    """
+    Devuelve todos los proveedores asociados a un usuario.
+    """
+    try:
+        suppliers = Supplier.get_suppliers_by_user(user_id)
+        return jsonify(suppliers), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
