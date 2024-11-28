@@ -8,7 +8,7 @@ CREATE TABLE users (
 -- Crear tabla de categorías
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE, -- Se añade UNIQUE para evitar duplicados de "None"
     descripcion TEXT,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -19,9 +19,9 @@ CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
-    category_id INT,
+    category_id INT DEFAULT NULL, -- Permitir valores NULL en category_id
     user_id INT NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL, -- Cambiar categoría a NULL en lugar de eliminar
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -53,3 +53,8 @@ CREATE TABLE suppliers_products (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE,
     FOREIGN KEY (supplier_id) REFERENCES products(id) ON DELETE CASCADE
 );
+
+-- Crear categoría predeterminada "None" para productos no categorizados
+INSERT INTO categories (name, descripcion, user_id)
+VALUES ('None', 'Categoría predeterminada para productos no categorizados', 1) 
+ON DUPLICATE KEY UPDATE id = id;

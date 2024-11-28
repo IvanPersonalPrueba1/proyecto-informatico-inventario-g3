@@ -8,6 +8,6 @@ CORS(app)
 def test():
     return jsonify({"message" : "test ok"})
 
-import api.routes.producto
-import api.routes.categorias
+import api.routes.products
+import api.routes.categories
 import api.routes.user
