@@ -7,16 +7,20 @@ class Product():
         "category_id": int  
     }
 
-    @classmethod
-    def validate(cls, data):
-        if data is None or not isinstance(data, dict):
+    @staticmethod
+    def validate(data):
+        name = data.get("name")
+        price = data.get("price")
+        category_id = data.get("category_id", None)
+
+        if not name or not isinstance(name, str):
             return False
-        for key in cls.schema:
-            if key not in data:
-                return False
-            if not isinstance(data[key], cls.schema[key]):
-                return False
+        if not price or not isinstance(price, (float, int)) or price < 0:
+            return False
+        if category_id is not None and not isinstance(category_id, int):
+            return False
         return True
+
 
     def __init__(self, data):
         self._id = None 
@@ -37,12 +41,10 @@ class Product():
 
     @classmethod
     def get_products_by_user(cls, user_id):
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute('SELECT id, name, price, category_id FROM products WHERE user_id = %s', (user_id,))
-        data = cursor.fetchall()
-        cursor.close()
-        connection.close()
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT id, name, price, category_id FROM products WHERE user_id = %s', (user_id,))
+                data = cursor.fetchall()
 
         if not data:
             raise DBError("No existe el recurso solicitado")
@@ -56,36 +58,48 @@ class Product():
             }
             for fila in data
         ]
-
+        
     @classmethod
     def create_product(cls, user_id, data):
         name = data.get("name")
         price = data.get("price")
-        category_id = data.get("category_id")
+        category_id = data.get("category_id", None)
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                try:
+                    # Verificar si ya existe un producto con el mismo nombre para este usuario
+                    cursor.execute(
+                        'SELECT id FROM products WHERE name = %s AND user_id = %s',
+                        (name, user_id)
+                    )
+                    existing_product = cursor.fetchone()
+                    if existing_product:
+                        raise DBError("No puedes crear el producto: ya existe un producto con ese nombre para este usuario.")
 
-        try:
-            # Verificar si el producto ya existe
-            cursor.execute('SELECT id FROM products WHERE user_id = %s AND name = %s', (user_id, name))
-            existing_product = cursor.fetchall()
-            if existing_product:
-                raise DBError("El producto ya existe para este usuario")
+                    # Verificar si la categoría existe
+                    if category_id is not None:
+                        cursor.execute(
+                            'SELECT id FROM categories WHERE id = %s AND user_id = %s', 
+                            (category_id, user_id)
+                        )
+                        category_exists = cursor.fetchone()
+                        if not category_exists:
+                            raise DBError("La categoría especificada no existe para este usuario.")
 
-            # Crear el nuevo producto
-            cursor.execute(
-                'INSERT INTO products (name, price, category_id, user_id) VALUES (%s, %s, %s, %s)', 
-                (name, price, category_id, user_id)
-            )
-            connection.commit()
+                    # Crear producto
+                    cursor.execute(
+                        'INSERT INTO products (name, price, category_id, user_id) VALUES (%s, %s, %s, %s)', 
+                        (name, price, category_id, user_id)
+                    )
+                    connection.commit()
 
-        except Exception as e:
-            raise DBError(f"Error al crear el producto: {str(e)}")
-
-        finally:
-            cursor.close()
-            connection.close()
+                except DBError as e:
+                    # Levantar el error con el mensaje específico
+                    raise DBError(f"Error al crear el producto: {str(e)}")
+                except Exception as e:
+                    # Captura de cualquier otro error inesperado
+                    raise DBError(f"Error interno del servidor: {str(e)}")
 
         return {"message": "Producto creado exitosamente"}, 201
 
@@ -93,68 +107,56 @@ class Product():
     def update_product(cls, user_id, product_id, data):
         name = data.get("name")
         price = data.get("price")
-        category_id = data.get("category_id")
+        category_id = data.get("category_id", None)
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                try:
+                    if category_id is not None:
+                        cursor.execute(
+                            'SELECT id FROM categories WHERE id = %s AND user_id = %s', (category_id, user_id)
+                        )
+                        category_exists = cursor.fetchone()
+                        if not category_exists:
+                            raise DBError("La categoría especificada no existe para este usuario")
 
-        try:
-            # Verificar si el producto existe para el usuario
-            cursor.execute('SELECT id FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
-            existing_product = cursor.fetchone()
-            if not existing_product:
-                raise DBError("El producto no existe para este usuario")
+                    cursor.execute(
+                        'UPDATE products SET name = %s, price = %s, category_id = %s WHERE id = %s AND user_id = %s',
+                        (name, price, category_id, product_id, user_id)
+                    )
+                    connection.commit()
 
-            # Actualizar el producto
-            cursor.execute(
-                'UPDATE products SET name = %s, price = %s, category_id = %s WHERE id = %s AND user_id = %s',
-                (name, price, category_id, product_id, user_id)
-            )
-            connection.commit()
-
-        except Exception as e:
-            raise DBError(f"Error al actualizar el producto: {str(e)}")
-
-        finally:
-            cursor.close()
-            connection.close()
+                except DBError as e:
+                    raise DBError(f"Error al actualizar el producto: {str(e)}")
 
         return {"message": "Producto actualizado exitosamente"}, 200
 
     @classmethod
     def delete_product(cls, user_id, product_id):
-        connection = get_db_connection()
-        cursor = connection.cursor()
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                try:
+                    # Verificar si el producto existe para el usuario
+                    cursor.execute('SELECT id FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
+                    existing_product = cursor.fetchone()
+                    if not existing_product:
+                        raise DBError("El producto no existe para este usuario")
 
-        try:
-            # Verificar si el producto existe para el usuario
-            cursor.execute('SELECT id FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
-            existing_product = cursor.fetchone()
-            if not existing_product:
-                raise DBError("El producto no existe para este usuario")
+                    # Eliminar el producto
+                    cursor.execute('DELETE FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
+                    connection.commit()
 
-            # Eliminar el producto
-            cursor.execute('DELETE FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
-            connection.commit()
-
-        except Exception as e:
-            raise DBError(f"Error al eliminar el producto: {str(e)}")
-
-        finally:
-            cursor.close()
-            connection.close()
+                except DBError as e:
+                    raise DBError(f"Error al eliminar el producto: {str(e)}")
 
         return {"message": "Producto eliminado exitosamente"}, 200
 
     @classmethod
     def get_product_by_id(cls, user_id, product_id):
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
-        cursor.execute('SELECT id, name, price, category_id FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
-        data = cursor.fetchone()
-        cursor.close()
-        connection.close()
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT id, name, price, category_id FROM products WHERE id = %s AND user_id = %s', (product_id, user_id))
+                data = cursor.fetchone()
 
         if not data:
             raise DBError("No existe el producto solicitado para este usuario")
@@ -165,3 +167,40 @@ class Product():
             "price": data[2],
             "category_id": data[3]
         }
+
+    @classmethod
+    def get_products_by_category_id(cls, user_id, category_id):
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                # Interpretar category_id igual a 0 como None
+                if category_id == 0:
+                    category_id = None
+
+                if category_id is not None:
+                    # Busca productos que coincidan con el ID de categoría proporcionado
+                    cursor.execute(
+                        'SELECT id, name, price, category_id FROM products WHERE category_id = %s AND user_id = %s',
+                        (category_id, user_id)
+                    )
+                else:
+                    # Busca productos que no tienen categoría (NULL)
+                    cursor.execute(
+                        'SELECT id, name, price, category_id FROM products WHERE category_id IS NULL AND user_id = %s',
+                        (user_id,)
+                    )
+
+                data = cursor.fetchall()
+
+        # Verificar si se encontraron productos
+        if not data:
+            raise DBError("No se encontraron productos para la categoría solicitada")
+
+        # Convertir los datos a un formato de respuesta JSON
+        return [
+            {
+                "id": row[0],
+                "name": row[1],
+                "price": row[2],
+                "category_id": row[3]
+            } for row in data
+        ]

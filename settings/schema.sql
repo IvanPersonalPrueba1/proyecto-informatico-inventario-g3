@@ -28,6 +28,7 @@ CREATE TABLE products (
 -- Crear tabla de stock
 CREATE TABLE stock (
     product_id INT NOT NULL PRIMARY KEY,
+    product_name VARCHAR(255) NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
     user_id INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
@@ -54,7 +55,5 @@ CREATE TABLE suppliers_products (
     FOREIGN KEY (supplier_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
--- Crear categoría predeterminada "None" para productos no categorizados
-INSERT INTO categories (name, descripcion, user_id)
-VALUES ('None', 'Categoría predeterminada para productos no categorizados', 1) 
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO users (username, password) 
+VALUES ('Usuario Predeterminado', 'hashed_password');

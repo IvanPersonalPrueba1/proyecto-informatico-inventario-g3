@@ -55,12 +55,13 @@ class User():
 
 
         # Buscar si existe un usuario con el mismo nombre
+        
         connection = get_db_connection()
         cursor = connection.cursor()
         cursor.execute('SELECT id FROM users WHERE username = %s', (username,))
         row = cursor.fetchone()
 
-
+        
         if row is not None:
             raise DBError({"message": "Ya existe un usuario con ese nombre", "code": 400})
         
@@ -70,7 +71,7 @@ class User():
         # Guardar el usuario en la base de datos con la contraseña hasheada        
         cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, hashed_password))
         connection.commit()
-
+        
 
         """ obtener el id del registro creado """
         cursor.execute('SELECT LAST_INSERT_ID()')
