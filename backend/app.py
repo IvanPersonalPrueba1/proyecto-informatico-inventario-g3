@@ -1,24 +1,23 @@
 from flask import Flask
-from backend.db_connection import create_connection
-from backend.routes.user_routes import user_routes
+from backend.models.database import db
+from backend.routes.report_routes import report_bp
+from backend.routes.order_routes import order_routes  # Importar las rutas de órdenes
 
-# Crear la instancia de la aplicación Flask
 app = Flask(__name__)
 
-# Ruta para probar la conexión a la base de datos
-@app.route('/')
-def index():
-    connection = create_connection()
-    
-    if connection is not None and connection.is_connected():
-        connection.close()
-        return "Conexión exitosa a la base de datos MySQL!"
-    else:
-        return "Error al conectar con la base de datos."
+# Configurar conexión a la base de datos (ajustado para phpMyAdmin)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/mydatabase'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Registrar las rutas de usuario
-app.register_blueprint(user_routes)
+db.init_app(app)
 
-# Iniciar la aplicación
-if __name__ == "__main__":
+# Registrar blueprints
+app.register_blueprint(report_bp)  # Blueprints para reportes
+app.register_blueprint(order_routes, url_prefix='/orders')  # Blueprints para órdenes
+
+if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
