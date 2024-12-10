@@ -1,4 +1,5 @@
 from api.db.db_config import get_db_connection, DBError
+from api import app
 
 class Product():
     schema = {

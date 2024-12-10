@@ -1,8 +1,8 @@
 from api import app
+from flask import request, jsonify
 from api.models.products import Product
-from flask import jsonify, request
-from api.utils.security import token_required
 from api.db.db_config import get_db_connection, DBError
+from api.utils.security import token_required
 
 @app.route('/user/<int:user_id>/products', methods=['GET'])
 @token_required

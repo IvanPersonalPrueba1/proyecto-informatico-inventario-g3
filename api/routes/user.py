@@ -1,6 +1,6 @@
 from api import app
+from flask import request, jsonify
 from api.models.user import User
-from flask import jsonify, request
 from api.db.db_config import DBError
 
 

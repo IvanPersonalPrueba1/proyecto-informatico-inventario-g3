@@ -73,7 +73,7 @@ class User():
         connection.commit()
         
 
-        """ obtener el id del registro creado """
+        #obtener el id del registro creado
         cursor.execute('SELECT LAST_INSERT_ID()')
         row = cursor.fetchone()
         id = row[0]
@@ -95,6 +95,7 @@ class User():
 
         connection = get_db_connection()
         cursor = connection.cursor()
+        
         # Buscar el usuario por nombre de usuario
         cursor.execute('SELECT id, username, password FROM users WHERE username = %s', (auth.username,))
         row = cursor.fetchone()
