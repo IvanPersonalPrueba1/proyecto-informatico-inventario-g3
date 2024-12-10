@@ -1,0 +1,285 @@
+:root {
+    --background-color: #f0f0f0;
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --highlight-color: #3498db;
+    --highlight-hover-color: #2980b9;
+    --text-color: white;
+    --link-color: #ecf0f1;
+    --error-color: #e74c3c;
+    --success-color: #4CAF50;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: var(--primary-color);
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+    text-align: center;
+    position: relative; /* Añadido para posicionar la campanita */
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.notification-icon {
+    font-size: 1.5em;
+    position: absolute;
+    right: 20px; /* Posición a la derecha */
+    top: 20px;  /* Posición en la parte superior */
+    cursor: pointer;
+}
+
+.notification-icon:hover {
+    color: var(--highlight-color); /* Color al pasar el mouse */
+}
+
+
+/* Estilo para la campanita destacada */
+.notification-icon.alert {
+    color: red;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+h3 {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--highlight-color);
+    border: none;
+    border-radius: 5px;
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative; /* Asegura que el spinner se alinee correctamente */
+}
+
+button:hover {
+    background-color: var(--highlight-hover-color);
+    transform: scale(1.1); /* Aumenta el tamaño un 10% */
+}
+
+.loading-spinner {
+    display: none; /* Inicialmente oculto */
+    position: absolute;
+    right: 10px; /* Alinea el spinner a la derecha dentro del botón */
+    top: 50%; /* Centra verticalmente el spinner */
+    transform: translateY(-50%); /* Centra verticalmente el spinner */
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--text-color);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#message,
+#registerSupplierMessage,
+#suppliersListMessage {
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.error {
+    color: var(--error-color);
+}
+
+.success {
+    color: var(--success-color);
+}
+
+/* Estilos para el modal de carga */
+.loading-spinner {
+    display: none; /* Inicialmente oculto */
+    position: absolute;
+    right: 10px; /* Alinea el spinner a la derecha dentro del botón */
+    top: 50%; /* Centra verticalmente el spinner */
+    transform: translateY(-50%); /* Centra verticalmente el spinner */
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--highlight-color); /* Color del spinner más acorde con el diseño */
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* Estilos para la página de gestión de proveedores */
+.supplier-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Estilos específicos para la página de gestión de proveedores */
+.container_supplier {
+    background-color: var(--primary-color); /* Fondo oscuro */
+    color: var(--text-color); /* Texto blanco */
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+.container_supplier > div {
+    background-color: var(--secondary-color); /* Fondo ligeramente más claro */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Estilos para el botón "Consultar Proveedores" */
+#getSuppliersBtn {
+    width: auto;
+}
+
+/* Estilos para la etiqueta "consult_product_id" */
+#getSuppliersByProductForm label[for="consult_product_id"] {
+    text-align: center
+}
+
+/* Estilos para la sección de consulta de proveedores */
+#getSuppliersByProductForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+}
+  
+#getSuppliersByProductForm input {
+    width: auto;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; 
+    z-index: 1; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo semitransparente */
+}
+
+.modal-content {
+    background-color: var(--primary-color); /* Fondo oscuro */
+    color: var(--text-color); /* Texto blanco */
+    margin: 5% auto; /* 5% desde arriba y centrado horizontalmente */
+    padding: 20px; 
+    border: 1px solid #888; 
+    width: 80%; /* Puede ajustar el ancho según sea necesario */
+    border-radius: 5px; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); 
+    position: relative; 
+}
+
+.close {
+    color: #aaa; 
+    float: right; 
+    font-size: 28px; 
+    font-weight: bold; 
+}
+
+.close:hover,
+.close:focus {
+    color: var(--text-color); 
+    text-decoration: none; 
+    cursor: pointer; 
+}
+
+/* Estilos para la tabla dentro del modal */
+.table {
+    width: 100%; 
+    margin: 20px 0;
+    border-collapse: collapse; 
+}
+
+.table thead {
+    background-color: var(--secondary-color); /* Fondo para el encabezado */
+}
+
+.table th, .table td {
+    padding: 10px;
+    border: 1px solid #ddd; 
+    text-align: left; 
+}
+
+.table th {
+    background-color: var(--highlight-hover-color); /* Fondo de las cabeceras */
+    color: var(--text-color); /* Texto blanco */
+}
+
+.table tr:nth-child(even) {
+    background-color: var(--secondary-color); /* Fondo para filas pares */
+}
+
+.table tr:hover {
+    background-color: var(--highlight-hover-color); /* Fondo al pasar el mouse */
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Proveedores</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <main class="container_supplier">
+        <h2>Gestión de Proveedores</h2>
+
+        <header class="header"> 
+            <h2>Bienvenido <span id="username"></span></h2> 
+        </header>
+
+        <div class="supplier-grid">
+            <!-- Sección para registrar nuevo proveedor -->
+            <div>
+                <h3>Registrar Nuevo Proveedor</h3>
+                <form id="registerSupplierForm">
+                    <label for="name_supplier">Nombre del Proveedor:</label>
+                    <input type="text" id="name_supplier" name="name_supplier" required>
+
+                    <label for="phone">Teléfono:</label>
+                    <input type="text" id="phone" name="phone" required>
+
+                    <label for="mail">Correo Electrónico:</label>
+                    <input type="email" id="mail" name="mail" required>
+
+                    <button type="button" id="registerSupplierBtn">Registrar Proveedor</button> 
+                </form>
+                <p id="registerSupplierMessage"></p>
+            </div>
+
+            <!-- Sección para vincular productos suministrados -->
+            <div>
+                <h3>Vincular Productos Suministrados</h3>
+                <form id="linkProductForm">
+                    <label for="product_id">Productos Suministrados:</label>
+                    <select id="product_id" name="product_id" required>
+                        <!-- Opciones serán llenadas mediante JS -->
+                    </select>
+
+                    <label for="supplier_id">Proveedores:</label>
+                    <select id="supplier_id" name="supplier_id" required>
+                        <!-- Opciones serán llenadas mediante JS -->
+                    </select>
+
+                    <button type="button" id="linkSupplierBtn">Vincular</button>
+                </form>
+                <p id="linkSupplierMessage"></p>
+            </div>
+        </div>
+
+        <!-- Sección para consultar proveedores por producto -->
+        <h3>Consultar Proveedores por Producto</h3>
+        <form id="getSuppliersByProductForm">
+            <label for="consult_product_id">ID del Producto:</label>
+            <input type="number" id="consult_product_id" name="consult_product_id" required>
+            <button type="button" id="getSuppliersBtn">Consultar Proveedores</button>
+        </form>
+        <p id="suppliersListMessage"></p>
+
+        <!-- Modal para mostrar proveedores -->
+        <div id="supplierModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <h3>Proveedores del Producto</h3>
+                <table id="suppliersTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/common/common.js"></script>
+    <script src="js/users/supplier.js"></script>
+</body>
+</html>

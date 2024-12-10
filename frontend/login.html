@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Gestión de Inventario</title> 
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <main class="container">
+        <h2>Bienvenido al Sistema para Gestión de Inventario</h2> 
+        <form id="loginForm">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="button" id="login-btn" onclick="userLogin()">Ingresar
+                <span class="loading-spinner" id="loading-spinner"></span> 
+            </button>
+        </form>
+        <p id="message"></p> 
+        <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p> <!-- Agregado -->
+    </main>
+
+    <script src="js/common/common.js"></script>
+    <script src="js/users/login.js"></script>
+</body>
+</html>
