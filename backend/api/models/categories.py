@@ -41,7 +41,7 @@ class Category():
             data = cursor.fetchall()
 
             if not data:
-                raise DBError("No existe el recurso solicitado")
+                raise DBError("no hay datos aun")
 
             return [cls(fila).to_json() for fila in data]
 

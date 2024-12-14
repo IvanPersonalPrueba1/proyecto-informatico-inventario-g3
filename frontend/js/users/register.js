@@ -1,4 +1,4 @@
-function userRegister(){
+function userRegister() {
     // Obtener los valores ingresados en el formulario
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -41,7 +41,9 @@ function userRegister(){
             // objeto response para ejecutar más acciones
             console.log(response)
             messageElement.innerHTML = "Usuario creado correctamente";
-            messageElement.classList.add('success');            
+            messageElement.classList.add('success');
+
+            window.location.href = "/frontend/public/login.html";
         })
         .catch(error => {
             // Hubo algún error, ya sea en respueta de la API o error de conexión

@@ -17,12 +17,11 @@ def get_products(user_id):
 @app.route('/user/<int:user_id>/products', methods=['POST'])
 @token_required
 def create_product(user_id):
-    #Crear un nuevo producto para un usuario.
-    data = request.get_json()
-                
+    # Crear un nuevo producto para un usuario.
+    data = request.get_json()    
     if not Product.validate(data):
         return jsonify({"error": "Datos inválidos"}), 400
-
+    
     try:
         message, status_code = Product.create_product(user_id, data)
         return jsonify(message), status_code
@@ -31,6 +30,7 @@ def create_product(user_id):
         return jsonify({"error": str(e)}), 400
     except Exception as e:
         return jsonify({"error": "Error interno del servidor"}), 500
+
     
 @app.route('/user/<int:user_id>/products/<int:product_id>', methods=['PUT'])
 @token_required
@@ -65,7 +65,6 @@ def delete_product(user_id, product_id):
 def get_products_by_category(user_id, category_id):
     if category_id == 0:
         category_id = None
-
     try:
         products = Product.get_products_by_category_id(user_id, category_id)
         return jsonify(products), 200

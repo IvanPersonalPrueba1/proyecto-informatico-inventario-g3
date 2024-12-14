@@ -8,7 +8,7 @@ from api.db.db_config import get_db_connection, DBError
 def token_required(func):
     @wraps(func)
     def decorated(*args, **kwargs):
-        print(kwargs)
+        #print(kwargs)
         token = None
 
         # Verificar si se incluye 'x-access-token' en los headers
@@ -21,7 +21,7 @@ def token_required(func):
         user_id = None
  
         # Verificar si 'id_user' está en los argumentos de la ruta
-        print("Argumentos de la solicitud: ", kwargs)
+        # print("Argumentos de la solicitud: ", kwargs)
         if 'user_id' in kwargs:
             user_id = kwargs['user_id']
 

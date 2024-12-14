@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/css/styles_dashboard_reports.css">
+    <title>Gestión de Reportes</title>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Gestión de Inventario</h2>
+        <ul>
+            <li><a href="dashboard.html">Inicio</a></li>
+            <li><a href="stock.html">Gestión de Stock</a></li>
+            <li><a href="supplier.html">Gestión de Proveedores</a></li>
+            <li><a href="products.html">Gestión de Productos</a></li>
+            <li><a href="categories.html">Gestión de Categorías</a></li>
+            <li><a href="orders.html">Órdenes de Compra</a></li>
+            <li><a href="reports.html">Reportes</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
+
+        <h1>Reportes de Compras</h1>
+
+        <!-- Formulario para resumen de compras por periodo -->
+        <form id="report-form">
+            <input type="date" id="start-date" required>
+            <input type="date" id="end-date" required>
+            <button type="submit">Generar Resumen</button>
+        </form>
+
+        <h2>Resumen de Compras</h2>
+        <ul id="purchases-summary"></ul>
+
+        <h2>Principales Proveedores</h2>
+        <ul id="top-suppliers"></ul>
+
+        <h2>Productos Más Comprados</h2>
+        <ul id="top-products"></ul>
+
+        <h2>Gastos Totales por Proveedor</h2>
+        <ul id="total-expenses"></ul>
+    </div>
+
+    <script src="/frontend/js/common/common.js"></script>
+    <script src="/frontend/js/users/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+/* Reset básico para márgenes y paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+}
+
+/* Estilo para la barra lateral */
+.sidebar {
+    width: 250px;
+    background-color: #4b0082; /* Color púrpura oscuro */
+    color: white;
+    padding: 20px;
+    height: 100vh; /* Altura completa de la pantalla */
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar li {
+    margin: 15px 0;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo para el contenedor principal */
+.container {
+    flex: 1;
+    padding: 20px;
+    background-color: white;
+    min-height: 100vh; /* Asegura que el contenedor principal ocupe al menos la altura de la pantalla */
+    border-left: 1px solid #e0e0e0; /* Separación entre barra lateral y contenido */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    font-size: 24px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+#logout-btn {
+    margin-right: 10px; /* Ajusta el espaciado según sea necesario */
+}
+
+.notification-icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+}
+
+.notification-icon:hover {
+    color: #ff9800; /* Color de notificación en hover */
+}
+
+/* Estilo para formularios */
+form {
+    margin-top: 20px;
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #4b0082; /* Color púrpura oscuro */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #6a0dad; /* Color púrpura más claro en hover */
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilo para mensajes */
+.message {
+    margin-top: 15px;
+    font-size: 18px;
+}
+
+/* Estilo para el botón "Volver" */
+.back-button {
+    background-color: #f44336; /* Color rojo */
+    margin-top: 20px;
+}
+
+/* Estilo para la sección de bajo stock */
+#lowStockSection {
+    background-color: #ffeb3b; /* Color amarillo para resaltar */
+    padding: 10px;
+    border: 1px solid #ffc107; /* Bordes amarillos */
+    border-radius: 5px;
+}
+
+#lowStockList {
+    list-style-type: none;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Barra lateral ocupa toda la pantalla */
+        height: auto;
+    }
+    .container {
+        margin-top: 20px;
+    }
+}
+
+.update-stock-heading {
+    margin-top: 20px;
+}
+
+/* Estilo para la campanita */
+.notification-icon {
+    font-size: 1.5em;
+    cursor: default; /* Cambiar el cursor a default */
+}
+
+.notification-icon.alert {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#stockProductList {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 20px;
+}
+
+#stockProductList li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    padding: 8px;
+    color: #ffffff;
+    background-color: #5403b6;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+h3 {
+    margin-top: 10px;
+}

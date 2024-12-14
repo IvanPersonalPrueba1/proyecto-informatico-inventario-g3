@@ -54,6 +54,7 @@ function showMessage(text, type) {
 // Cargar productos en el dropdown
 function loadProducts(user_id, token) {
     const productDropdown = document.getElementById('product_id');
+
     fetch(`http://localhost:5000/user/${user_id}/stock`, {
         method: 'GET',
         headers: {

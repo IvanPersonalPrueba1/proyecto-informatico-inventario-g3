@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/css/styles_dashboard_categories.css">
+    <title>Gestión de Categorias</title>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Gestión de Inventario</h2>
+        <ul>
+            <li><a href="dashboard.html">Inicio</a></li>
+            <li><a href="stock.html">Gestión de Stock</a></li>
+            <li><a href="supplier.html">Gestión de Proveedores</a></li>
+            <li><a href="products.html">Gestión de Productos</a></li>
+            <li><a href="categories.html">Gestión de Categorías</a></li>
+            <li><a href="orders.html">Órdenes de Compra</a></li>
+            <li><a href="reports.html">Reportes</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
+        
+        <h1>Gestión de Categorias</h1>
+
+        <div id="registerCategoryMessage" class="message"></div>
+
+        <!-- Formulario para crear una nueva Categoria -->
+        <form id="registerCategoryForm">
+            <h2> Crear una nueva categoria </h2>
+            <input type="text" id="name_category" placeholder="Nombre de la Categoria" required>
+            <input type="text" id="description" placeholder="descripcion de Categoría" required>
+            <button id="registerCategoryBtn" type="submit">Agregar Categoria</button>
+        </form>
+
+        <div id="updateCategoryMessage" class="message"></div>
+
+        <form id="updateCategoryForm">
+            <h2> Actualizar una nueva categoria</h2>
+            <select id="category_id" name="cateogory_id" required>
+                <!-- Las opciones se llenarán automáticamente por la función loadCategories -->
+            </select>
+            <input type="text" id="new_name_category" placeholder="Nuevo Nombre de la Categoria" required>
+            <input type="text" id="new_description" placeholder="Nueva descripcion de Categoría" required>
+            <button id="updateCategoryBtn" type="submit">Actualizar Categoria</button>
+        </form>
+
+        <h2>Lista de Categorias</h2>
+        <ul id="category-list"></ul>
+
+    </div>
+
+    <script src="/frontend/js/common/common.js"></script>
+    <script src="/frontend/js/users/categories.js"></script>
+</body>
+</html>

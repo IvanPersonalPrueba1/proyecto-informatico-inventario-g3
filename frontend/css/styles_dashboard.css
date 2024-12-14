@@ -1,0 +1,131 @@
+/* css/styles_dashboard.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    overflow-x: hidden;
+}
+
+/* Botón para abrir el sidenav */
+.open-btn {
+    font-size: 20px;
+    padding: 10px 15px;
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 15px;
+    border-radius: 5px;
+}
+
+.open-btn:hover {
+    background-color: #5c33ff;
+}
+
+/* Sidenav estilo overlay */
+.sidebar {
+    height: 100%;
+    width: 0; /* Oculto inicialmente */
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #6a0dad;
+    color: white;
+    overflow-x: hidden;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: none; /* Ocultar por defecto */
+}
+
+/* Contenido del sidenav */
+.sidebar h2 {
+    margin: 0;
+    padding: 15px;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.sidebar ul li {
+    padding: 10px 15px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Botón para cerrar el sidenav */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #ffcccc;
+}
+
+/* Contenido principal */
+.main-content {
+    padding: 20px;
+    margin-left: 0;
+}
+
+/* Sidenav abierto */
+.sidebar.open {
+    display: block;
+    width: 250px;
+}
+
+/* Estilo para el header */
+.header {
+    background-color: #4b0082; /* Color de fondo púrpura oscuro */
+    color: white; /* Color de texto blanco */
+    padding: 15px; /* Espaciado interno */
+    display: flex; /* Usar flexbox para alinear elementos */
+    justify-content: space-between; /* Espacio entre el título y el botón */
+    align-items: center; /* Centrar verticalmente */
+}
+
+/* Estilo para el título */
+.header h2 {
+    font-size: 20px; /* Tamaño de fuente del título */
+    margin: 0; /* Sin margen */
+}
+
+/* Estilo para el nombre de usuario */
+.header #username {
+    font-weight: bold; /* Hacer que el nombre sea negrita */
+}
+
+/* Estilo para el botón de cerrar sesión */
+#logout-btn {
+    background-color: #ff4d4d; /* Color de fondo rojo claro */
+    color: white; /* Color de texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 15px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */
+    font-size: 16px; /* Tamaño de fuente del botón */
+}
+
+/* Efecto hover para el botón */
+#logout-btn:hover {
+    background-color: #ff1a1a; /* Color más oscuro al pasar el mouse */
+}

@@ -50,11 +50,12 @@ CREATE TABLE suppliers (
 CREATE TABLE suppliers_products (
     supplier_id INT NOT NULL,
     product_id INT NOT NULL,
+    user_id INT NOT NULL,
     PRIMARY KEY (supplier_id, product_id),
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE,
-    FOREIGN KEY (supplier_id) REFERENCES products(id) ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
 --
 
 CREATE TABLE purchase_orders (
@@ -75,5 +76,15 @@ CREATE TABLE order_products (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (username, password) 
-VALUES ('Usuario_prueba', '12345');
+-- Crear trigger para autocompletar stock
+DELIMITER $$
+
+CREATE TRIGGER after_product_insert
+AFTER INSERT ON products
+FOR EACH ROW
+BEGIN
+    INSERT INTO stock (product_id, product_name, quantity, user_id)
+    VALUES (NEW.id, NEW.name, 0, NEW.user_id);
+END$$
+
+DELIMITER ;

@@ -5,23 +5,30 @@ class Product():
     schema = {
         "name": str,
         "price": (int, float),  
-        "category_id": int  
+        "category_id": (int, type(None)),
     }
 
-    @staticmethod
-    def validate(data):
-        name = data.get("name")
-        price = data.get("price")
-        category_id = data.get("category_id", None)
-
-        if not name or not isinstance(name, str):
+    @classmethod
+    def validate(cls, data):
+        if not isinstance(data, dict):
             return False
-        if not price or not isinstance(price, (float, int)) or price < 0:
-            return False
-        if category_id is not None and not isinstance(category_id, int):
-            return False
+        
+        for key, value_type in cls.schema.items():
+            value = data.get(key)
+            # Verifica que el tipo de dato coincida y permite que category_id sea None
+            if key == "category_id":
+                if value is not None and not isinstance(value, int):
+                    return False
+            else:
+                if not isinstance(value, value_type):
+                    return False
+            
+            # Validaciones adicionales
+            if key == "price":
+                if value <= 0:
+                    return False  # Asegura que el precio sea positivo
+            
         return True
-
 
     def __init__(self, data):
         self._id = None 
@@ -48,7 +55,7 @@ class Product():
                 data = cursor.fetchall()
 
         if not data:
-            raise DBError("No existe el recurso solicitado")
+            raise DBError("no hay datos aun")
 
         return [
             {
@@ -65,7 +72,7 @@ class Product():
         name = data.get("name")
         price = data.get("price")
         category_id = data.get("category_id", None)
-
+        
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 try:
@@ -91,7 +98,7 @@ class Product():
                     # Crear producto
                     cursor.execute(
                         'INSERT INTO products (name, price, category_id, user_id) VALUES (%s, %s, %s, %s)', 
-                        (name, price, category_id, user_id)
+                        (name, price, category_id if category_id else None, user_id)
                     )
                     connection.commit()
 
@@ -178,23 +185,17 @@ class Product():
                     category_id = None
 
                 if category_id is not None:
-                    # Busca productos que coincidan con el ID de categoría proporcionado
                     cursor.execute(
                         'SELECT id, name, price, category_id FROM products WHERE category_id = %s AND user_id = %s',
                         (category_id, user_id)
                     )
                 else:
-                    # Busca productos que no tienen categoría (NULL)
                     cursor.execute(
                         'SELECT id, name, price, category_id FROM products WHERE category_id IS NULL AND user_id = %s',
                         (user_id,)
                     )
 
                 data = cursor.fetchall()
-
-        # Verificar si se encontraron productos
-        if not data:
-            raise DBError("No se encontraron productos para la categoría solicitada")
 
         # Convertir los datos a un formato de respuesta JSON
         return [
@@ -204,4 +205,4 @@ class Product():
                 "price": row[2],
                 "category_id": row[3]
             } for row in data
-        ]
+        ] if data else []  # Retorna una lista vacía si no se encuentran productos

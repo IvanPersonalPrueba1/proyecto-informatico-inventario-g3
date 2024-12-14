@@ -1,0 +1,128 @@
+/* Reset básico para márgenes y paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+}
+
+/* Estilo para la barra lateral */
+.sidebar {
+    width: 250px;
+    background-color: #4b0082; /* Color púrpura oscuro */
+    color: white;
+    padding: 20px;
+    height: 100vh; /* Altura completa de la pantalla */
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0; /* Sin padding */
+}
+
+.sidebar li {
+    margin: 15px 0;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo para el contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: white;
+    min-height: 100vh; /* Asegura que el contenedor principal ocupe al menos la altura de la pantalla */
+    border-left: 1px solid #e0e0e0; /* Separación entre barra lateral y contenido */
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #4b0082; /* Color púrpura oscuro para el título */
+}
+
+/* Estilo para formularios */
+form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0; /* Espaciado entre inputs */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Resaltar inputs no válidos */
+form input:invalid {
+    border-color: red; /* Resaltar inputs no válidos */
+}
+
+form button {
+    background-color: #4b0082; /* Color púrpura oscuro */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Transición suave para hover */
+}
+
+form button:hover {
+    background-color: #6a0dad; /* Color púrpura más claro en hover */
+}
+
+/* Estilo para listas de reportes en el contenido principal */
+h2 {
+    margin-top: 30px; /* Espaciado antes de las secciones */
+    font-size: 22px;
+    color: #ffffff; /* Color púrpura para subtítulos */
+}
+
+.main-content ul {
+    list-style-type: none; /* Sin viñetas */
+    padding: 0; /* Sin padding */
+    margin-top: 20px; /* Margen superior para separación */
+}
+
+.main-content ul li {
+    background-color: #f9f9f9; /* Fondo gris claro para elementos de la lista */
+    border: 1px solid #ddd; /* Bordes sutiles */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px;
+    margin-bottom: 10px; /* Espaciado entre elementos de la lista */
+}
+
+/* Estilo para mensajes (opcional, en caso de necesitar mensajes) */
+.message {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #f44336; /* Color rojo para mensajes de error */
+}
+
+/* Estilo para mensajes vacíos */
+.empty-message {
+    text-align: center;
+    color: #777; /* Color gris para mensajes vacíos */
+    font-style: italic;
+}

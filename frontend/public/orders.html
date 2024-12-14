@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles_dashboard_orders.css">
+    <title>Gestión de Órdenes de Compra</title>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Gestión de Inventario</h2>
+        <ul>
+            <li><a href="dashboard.html">Inicio</a></li>
+            <li><a href="stock.html">Gestión de Stock</a></li>
+            <li><a href="supplier.html">Gestión de Proveedores</a></li>
+            <li><a href="products.html">Gestión de Productos</a></li>
+            <li><a href="categories.html">Gestión de Categorías</a></li>
+            <li><a href="orders.html">Órdenes de Compra</a></li>
+            <li><a href="reports.html">Reportes</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Gestión de Órdenes de Compra</h1>
+
+        <!-- Formulario para crear una nueva orden -->
+        <form id="order-form">
+            <input type="number" id="supplier-id" placeholder="ID del Proveedor" required>
+            <input type="date" id="order-date" placeholder="Fecha de la Orden" required>
+            <input type="number" id="total-amount" placeholder="Monto Total" required min="0" step="0.01">
+            <button type="submit">Agregar Orden</button>
+        </form>
+
+        <h2>Lista de Órdenes</h2>
+        <ul id="order-list"></ul>
+    </div>
+
+    <script src="../js/common/common.js"></script>
+    <script src="../js/orders/orders.js"></script>
+</body>
+</html>
