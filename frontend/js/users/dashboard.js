@@ -19,3 +19,6 @@ function userLogout() {
     localStorage.clear(); // Limpia todos los datos del almacenamiento
     window.location.href = "login.html";
 }
+
+const username = localStorage.getItem('username');
+document.getElementById("Welcome_username").innerHTML = username;
