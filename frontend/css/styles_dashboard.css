@@ -1,44 +1,55 @@
-/* General body styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
     color: #333;
     display: flex;
+    margin: 0;
 }
 
-/* Button to open sidenav */
 .open-btn {
-    font-size: 20px;
-    padding: 10px 15px;
+    font-size: 18px;
+    padding: 10px 20px;
     background-color: #6a0dad;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
-    margin: 15px;
-    border-radius: 5px;
+    transition: background-color 0.3s;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
 }
 
 .open-btn:hover {
     background-color: #5c33ff;
 }
 
-/* Sidenav overlay styles */
 .sidebar {
     width: 250px;
-    background-color: #6a0dad; /* Dark purple color */
+    background-color: #6a0dad;
     color: white;
     padding: 20px;
-    height: 100vh; /* Full viewport height */
+    height: 100vh;
+    position: fixed;
+    left: -250px;
+    transition: left 0.3s;
+    z-index: 999;
 }
 
-/* Sidenav content */
+.sidebar.visible {
+    left: 0;
+}
+
 .sidebar h2 {
     margin-bottom: 20px;
     font-size: 24px;
+    font-weight: bold;
 }
 
 .sidebar ul {
     list-style-type: none;
+    padding: 0;
 }
 
 .sidebar li {
@@ -48,13 +59,13 @@ body {
 .sidebar a {
     color: white;
     text-decoration: none;
+    transition: text-decoration 0.2s;
 }
 
 .sidebar a:hover {
     text-decoration: underline;
 }
 
-/* Button to close sidenav */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -66,58 +77,78 @@ body {
     cursor: pointer;
 }
 
-.close-btn:hover {
-    color: #ffcccc;
-}
-
-/* Main content styles */
 .main-content {
     flex: 1;
-    padding: 20px;
+    padding: 30px;
+    margin-left: 250px;
+    transition: margin-left 0.3s;
     background-color: white;
-    min-height: 100vh; /* Ensure main container occupies full viewport height */
-    border-left: 1px solid #e0e0e0; /* Divider between sidebar and content */
+    min-height: 100vh;
 }
 
-/* Open sidenav */
-.sidebar.open {
-    display: block;
-    width: 250px;
-}
-
-/* Header styles */
 .header {
-    background-color: #4b0082; /* Dark purple background */
-    color: white; /* White text color */
-    padding: 15px; /* Internal spacing */
-    display: flex; /* Flexbox alignment */
-    justify-content: space-between; /* Space between title and button */
-    align-items: center; /* Vertical centering */
+    background-color: #4b0082;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Header title styles */
-.header h2 {
-    font-size: 20px; /* Title font size */
-    margin: 0; /* No margin */
+.header h1 {
+    font-size: 24px;
+    margin: 0;
 }
 
-/* Username styles */
-.header #username {
-    font-weight: bold; /* Bold username */
+.header #Welcome_username {
+    font-weight: bold;
 }
 
-/* Logout button styles */
 #logout-btn {
-    background-color: #ff4d4d; /* Light red background */
-    color: white; /* White text */
-    border: none; /* No border */
-    padding: 10px 15px; /* Internal spacing */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 16px; /* Button font size */
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
 }
 
-/* Logout button hover effect */
 #logout-btn:hover {
-    background-color: #ff1a1a; /* Darker red on hover */
+    background-color: #ff1a1a;
+}
+
+.content-section {
+    margin-top: 20px;
+}
+
+.quick-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #e6e6e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    min-width: 150px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.card p {
+    margin: 0;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
