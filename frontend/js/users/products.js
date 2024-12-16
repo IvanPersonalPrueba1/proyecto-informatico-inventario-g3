@@ -18,8 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
 const token = localStorage.getItem('token');
 const user_id = localStorage.getItem('id');
 const username = localStorage.getItem('username');
-let categories = []; // Almacenará las categorías
 document.getElementById("Welcome_username").innerHTML = username;
+
+let categories = []; // Almacenará las categorías
 
 
 // Funciones principales

@@ -1,13 +1,12 @@
-/* css/styles_dashboard.css */
+/* General body styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-    overflow-x: hidden;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
 }
 
-/* Botón para abrir el sidenav */
+/* Button to open sidenav */
 .open-btn {
     font-size: 20px;
     padding: 10px 15px;
@@ -23,49 +22,39 @@ body {
     background-color: #5c33ff;
 }
 
-/* Sidenav estilo overlay */
+/* Sidenav overlay styles */
 .sidebar {
-    height: 100%;
-    width: 0; /* Oculto inicialmente */
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #6a0dad;
+    width: 250px;
+    background-color: #6a0dad; /* Dark purple color */
     color: white;
-    overflow-x: hidden;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    display: none; /* Ocultar por defecto */
+    padding: 20px;
+    height: 100vh; /* Full viewport height */
 }
 
-/* Contenido del sidenav */
+/* Sidenav content */
 .sidebar h2 {
-    margin: 0;
-    padding: 15px;
-    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
 }
 
 .sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
+    list-style-type: none;
 }
 
-.sidebar ul li {
-    padding: 10px 15px;
+.sidebar li {
+    margin: 15px 0;
 }
 
-.sidebar ul li a {
+.sidebar a {
     color: white;
     text-decoration: none;
-    display: block;
 }
 
-.sidebar ul li a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
+.sidebar a:hover {
+    text-decoration: underline;
 }
 
-/* Botón para cerrar el sidenav */
+/* Button to close sidenav */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -81,51 +70,54 @@ body {
     color: #ffcccc;
 }
 
-/* Contenido principal */
+/* Main content styles */
 .main-content {
+    flex: 1;
     padding: 20px;
-    margin-left: 0;
+    background-color: white;
+    min-height: 100vh; /* Ensure main container occupies full viewport height */
+    border-left: 1px solid #e0e0e0; /* Divider between sidebar and content */
 }
 
-/* Sidenav abierto */
+/* Open sidenav */
 .sidebar.open {
     display: block;
     width: 250px;
 }
 
-/* Estilo para el header */
+/* Header styles */
 .header {
-    background-color: #4b0082; /* Color de fondo púrpura oscuro */
-    color: white; /* Color de texto blanco */
-    padding: 15px; /* Espaciado interno */
-    display: flex; /* Usar flexbox para alinear elementos */
-    justify-content: space-between; /* Espacio entre el título y el botón */
-    align-items: center; /* Centrar verticalmente */
+    background-color: #4b0082; /* Dark purple background */
+    color: white; /* White text color */
+    padding: 15px; /* Internal spacing */
+    display: flex; /* Flexbox alignment */
+    justify-content: space-between; /* Space between title and button */
+    align-items: center; /* Vertical centering */
 }
 
-/* Estilo para el título */
+/* Header title styles */
 .header h2 {
-    font-size: 20px; /* Tamaño de fuente del título */
-    margin: 0; /* Sin margen */
+    font-size: 20px; /* Title font size */
+    margin: 0; /* No margin */
 }
 
-/* Estilo para el nombre de usuario */
+/* Username styles */
 .header #username {
-    font-weight: bold; /* Hacer que el nombre sea negrita */
+    font-weight: bold; /* Bold username */
 }
 
-/* Estilo para el botón de cerrar sesión */
+/* Logout button styles */
 #logout-btn {
-    background-color: #ff4d4d; /* Color de fondo rojo claro */
-    color: white; /* Color de texto blanco */
-    border: none; /* Sin borde */
-    padding: 10px 15px; /* Espaciado interno */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambiar cursor al pasar el mouse */
-    font-size: 16px; /* Tamaño de fuente del botón */
+    background-color: #ff4d4d; /* Light red background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 15px; /* Internal spacing */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Button font size */
 }
 
-/* Efecto hover para el botón */
+/* Logout button hover effect */
 #logout-btn:hover {
-    background-color: #ff1a1a; /* Color más oscuro al pasar el mouse */
+    background-color: #ff1a1a; /* Darker red on hover */
 }

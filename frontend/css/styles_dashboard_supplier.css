@@ -54,13 +54,22 @@ body {
 }
 
 .header {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
+    background-color: #4b0082; /* Color de fondo púrpura oscuro */
+    color: white; /* Color de texto blanco */
+    padding: 15px; /* Espaciado interno */
+    display: flex; /* Usar flexbox para alinear elementos */
+    justify-content: space-between; /* Espacio entre el título y el botón */
+    align-items: center; /* Centrar verticalmente */
 }
 
 .header h2 {
-    font-size: 24px;
+    font-size: 20px; /* Tamaño de fuente del título */
+    margin: 0; /* Sin margen */
+}
+
+/* Estilo para el nombre de usuario */
+.header #username {
+    font-weight: bold; /* Hacer que el nombre sea negrita */
 }
 
 /* Estilo para la cuadrícula de proveedores */
@@ -77,32 +86,35 @@ body {
     padding: 15px;
 }
 
-h3 {
-    margin-bottom: 10px;
-}
-
 /* Estilo para formularios */
 form {
-    margin-top: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd; /* Borde sutil alrededor del formulario */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 15px; /* Espaciado interno del formulario */
+    background-color: #f9f9f9; /* Fondo gris claro para formularios */
 }
 
-form label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
+form h2 {
+    margin-bottom: 15px;
+    color: #333; /* Títulos de formularios en color oscuro */
 }
 
-form input, 
+form input,
 form select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 10px 0; /* Espaciado entre inputs */
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-/* Estilo para botones */
-button {
+form input:invalid {
+    border-color: red; /* Resaltar inputs no válidos */
+}
+
+form button {
     background-color: #4b0082; /* Color púrpura oscuro */
     color: white;
     border: none;
@@ -111,7 +123,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+form button:hover {
     background-color: #6a0dad; /* Color púrpura más claro en hover */
 }
 
@@ -119,6 +131,13 @@ button:hover {
 #registerSupplierMessage, 
 #linkSupplierMessage, 
 #suppliersListMessage {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #f44336; /* Color rojo para mensajes de error */
+}
+
+/* Estilo para mensajes */
+.message {
     margin-top: 10px;
     font-size: 16px;
     color: #f44336; /* Color rojo para mensajes de error */
@@ -176,4 +195,20 @@ button:hover {
 .table th {
     background-color: #4b0082; /* Color de fondo de encabezados */
     color: white; /* Color de texto de encabezados */
+}
+
+/* Estilo para el botón de cerrar sesión */
+#logout-btn {
+    background-color: #ff4d4d; /* Color de fondo rojo claro */
+    color: white; /* Color de texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 15px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */
+    font-size: 16px; /* Tamaño de fuente del botón */
+}
+
+/* Efecto hover para el botón */
+#logout-btn:hover {
+    background-color: #ff1a1a; /* Color más oscuro al pasar el mouse */
 }

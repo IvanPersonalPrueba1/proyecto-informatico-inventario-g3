@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+const username = localStorage.getItem('username');
+document.getElementById("Welcome_username").innerHTML = username;
 
 
 // Mostrar mensajes al usuario

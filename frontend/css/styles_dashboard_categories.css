@@ -27,8 +27,7 @@ body {
 }
 
 .sidebar ul {
-    list-style-type: none; /* Sin viñetas */
-    padding: 0; /* Sin padding */
+    list-style-type: none;
 }
 
 .sidebar li {
@@ -36,8 +35,8 @@ body {
 }
 
 .sidebar a {
-    color: white; /* Color del texto */
-    text-decoration: none; /* Sin subrayado */
+    color: white; 
+    text-decoration: none; 
 }
 
 .sidebar li:hover {

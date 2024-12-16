@@ -10,6 +10,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
+    flex-direction: column; /* Cambiar para dispositivos pequeños */
 }
 
 /* Estilo para la barra lateral */
@@ -37,7 +38,6 @@ body {
 .sidebar a {
     color: white;
     text-decoration: none;
-    font-size: 18px;
 }
 
 .sidebar a:hover {
@@ -53,20 +53,8 @@ body {
     border-left: 1px solid #e0e0e0; /* Separación entre barra lateral y contenido */
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+h1 {
     margin-bottom: 20px;
-}
-
-.header h2 {
-    font-size: 24px;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
 }
 
 #logout-btn {
@@ -86,23 +74,32 @@ body {
 /* Estilo para formularios */
 form {
     margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd; /* Borde sutil alrededor del formulario */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 15px; /* Espaciado interno del formulario */
+    background-color: #f9f9f9; /* Fondo gris claro para formularios */
 }
 
-form label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
+form h2 {
+    margin-bottom: 15px;
+    color: #333; /* Títulos de formularios en color oscuro */
 }
 
-form input {
+form input,
+form select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 10px 0; /* Espaciado entre inputs */
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-button {
+form input:invalid {
+    border-color: red; /* Resaltar inputs no válidos */
+}
+
+form button {
     background-color: #4b0082; /* Color púrpura oscuro */
     color: white;
     border: none;
@@ -111,7 +108,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+form button:hover {
     background-color: #6a0dad; /* Color púrpura más claro en hover */
 }
 
@@ -133,14 +130,27 @@ button:hover {
 
 /* Estilo para mensajes */
 .message {
-    margin-top: 15px;
-    font-size: 18px;
+    margin-top: 10px;
+    font-size: 16px;
+    color: #f44336; /* Color rojo para mensajes de error */
 }
 
-/* Estilo para el botón "Volver" */
-.back-button {
-    background-color: #f44336; /* Color rojo */
-    margin-top: 20px;
+.header {
+    background-color: #4b0082; /* Color de fondo púrpura oscuro */
+    color: white; /* Color de texto blanco */
+    padding: 15px; /* Espaciado interno */
+    display: flex; /* Usar flexbox para alinear elementos */
+    justify-content: space-between; /* Espacio entre el título y el botón */
+    align-items: center; /* Centrar verticalmente */
+}
+
+.header h2 {
+    font-size: 20px; /* Tamaño de fuente del título */
+    margin: 0; /* Sin margen */
+}
+
+.header #username {
+    font-weight: bold; /* Hacer que el nombre sea negrita */
 }
 
 /* Estilo para la sección de bajo stock */
@@ -204,20 +214,17 @@ button:hover {
     color: #333;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+#logout-btn {
+    background-color: #ff4d4d; /* Color de fondo rojo claro */
+    color: white; /* Color de texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 15px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */
+    font-size: 16px; /* Tamaño de fuente del botón */
 }
 
-li {
-    padding: 8px;
-    color: #ffffff;
-    background-color: #5403b6;
-    margin-bottom: 5px;
-    border-radius: 4px;
-}
-
-h3 {
-    margin-top: 10px;
+/* Efecto hover para el botón */
+#logout-btn:hover {
+    background-color: #ff1a1a; /* Color más oscuro al pasar el mouse */
 }
