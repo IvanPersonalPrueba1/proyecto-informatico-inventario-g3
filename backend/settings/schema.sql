@@ -60,7 +60,7 @@ CREATE TABLE suppliers_products (
 
 CREATE TABLE purchase_orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    order_date DATE NOT NULL,
+    order_date DATE NOT NULL DEFAULT CURRENT_DATE,
     received_date DATE DEFAULT NULL,
     status ENUM('pending', 'completed', 'deleted') DEFAULT 'pending',
     user_id INT NOT NULL,

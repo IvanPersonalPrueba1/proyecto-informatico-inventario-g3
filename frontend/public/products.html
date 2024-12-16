@@ -7,17 +7,24 @@
     <title>Gestión de Productos</title>
 </head>
 <body>
-    <div class="sidebar">
+    <!-- Botón para abrir el sidenav -->
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <!-- Barra lateral tipo overlay -->
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
         <h2>Gestión de Inventario</h2>
-        <ul>
-            <li><a href="dashboard.html">Inicio</a></li>
-            <li><a href="stock.html">Gestión de Stock</a></li>
-            <li><a href="supplier.html">Gestión de Proveedores</a></li>
-            <li><a href="products.html">Gestión de Productos</a></li>
-            <li><a href="categories.html">Gestión de Categorías</a></li>
-            <li><a href="orders.html">Órdenes de Compra</a></li>
-            <li><a href="reports.html">Reportes</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
     </div>
 
     <div class="main-content">

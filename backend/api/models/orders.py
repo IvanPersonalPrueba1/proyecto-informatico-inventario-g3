@@ -6,7 +6,6 @@ import datetime
 class Order:
     # Esquema de validación para los datos de la orden
     schema = {
-        "order_date": str,
         "products": list
     }
 
@@ -43,7 +42,6 @@ class Order:
                 (id, order_date, received_date, status, products)
         """
         self.id = data.get("id")
-        self.order_date = data["order_date"]
         self.received_date = None  # Inicializar como nula
         self.status = 'pending'  # Estado por defecto
         self.products = data["products"]
@@ -58,7 +56,6 @@ class Order:
         """
         return {
             "id": self.id,
-            "order_date": self.order_date,
             "received_date": self.received_date,
             "status": self.status,
             "products": self.products
@@ -90,7 +87,6 @@ class Order:
 
     @classmethod
     def create_order(cls, user_id, data):
-        order_date = data.get("order_date")
         products = data.get("products")
 
         with get_db_connection() as connection:
@@ -98,11 +94,11 @@ class Order:
                 try:
                     # Crear la orden en purchase_orders
                     cursor.execute(
-                        'INSERT INTO purchase_orders (order_date, user_id) VALUES (%s, %s)',
-                        (order_date, user_id)
+                        'INSERT INTO purchase_orders (user_id) VALUES (%s)',
+                        (user_id,)
                     )
                     order_id = cursor.lastrowid  # Obtener el order_id generado
-
+                    
                     # Insertar los productos de la orden
                     for product in products:
                         cursor.execute(
@@ -213,8 +209,6 @@ class Order:
                     raise DBError(f"Error al intentar eliminar la orden: {e}")
 
         return {"message": "Orden eliminada exitosamente"}, 200
-
-
 
     @classmethod
     def get_order_by_id(cls, user_id, order_id):
