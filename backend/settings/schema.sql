@@ -60,11 +60,11 @@ CREATE TABLE suppliers_products (
 
 CREATE TABLE purchase_orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    supplier_id INT NOT NULL,
     order_date DATE NOT NULL,
-    received_date DATE,
-    status ENUM('pending', 'completed') DEFAULT 'pending',
-    FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE CASCADE
+    received_date DATE DEFAULT NULL,
+    status ENUM('pending', 'completed', 'deleted') DEFAULT 'pending',
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE order_products (

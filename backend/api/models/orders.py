@@ -1,165 +1,242 @@
 from api.db.db_config import get_db_connection, DBError
+from flask import request, jsonify
+from api import app
+import datetime
 
-class Order():
+class Order:
+    # Esquema de validación para los datos de la orden
     schema = {
-        "supplier_id": int,
-        "order_date": str,  # Fecha en formato 'YYYY-MM-DD'
-        "total_amount": (float, int)
+        "order_date": str,
+        "products": list
     }
 
-    @staticmethod
-    def validate(data):
-        supplier_id = data.get("supplier_id")
-        order_date = data.get("order_date")
-        total_amount = data.get("total_amount")
+    @classmethod
+    def validate(cls, data):
+        """ 
+        Valida los datos de la orden contra el esquema definido. 
 
-        if not supplier_id or not isinstance(supplier_id, int):
+        Verifica que todos los campos están presentes y tienen el tipo correcto.
+
+        Parámetros:
+        - data: Diccionario con los datos a validar.
+
+        Retorna:
+        - True si los datos son válidos, False en caso contrario.
+        """
+        if data is None or not isinstance(data, dict):
             return False
-        if not order_date or not isinstance(order_date, str):
-            return False
-        if not total_amount or not isinstance(total_amount, (float, int)) or total_amount < 0:
-            return False
+        # Control: data contiene todas las claves?
+        for key in cls.schema:
+            if key not in data:
+                return False
+            if not isinstance(data[key], cls.schema[key]):
+                return False
         return True
 
+    # Constructor base
     def __init__(self, data):
-        try:
-            self._supplier_id = data["supplier_id"]
-            self._order_date = data["order_date"]
-            self._total_amount = data["total_amount"]
-        except KeyError as e:
-            raise ValueError(f"Falta la clave esperada: {e}")
+        """ 
+        Inicializa un objeto Order con los datos proporcionados. 
 
+        Parámetros:
+        - data: Diccionario con los datos de la orden en el siguiente orden:
+                (id, order_date, received_date, status, products)
+        """
+        self.id = data.get("id")
+        self.order_date = data["order_date"]
+        self.received_date = None  # Inicializar como nula
+        self.status = 'pending'  # Estado por defecto
+        self.products = data["products"]
+
+    # Conversión a objeto JSON
     def to_json(self):
+        """ 
+        Convierte el objeto Order a un diccionario JSON. 
+
+        Retorna:
+        - Diccionario con los datos de la orden en formato JSON.
+        """
         return {
-            "supplier_id": self._supplier_id,
-            "order_date": self._order_date,
-            "total_amount": self._total_amount
+            "id": self.id,
+            "order_date": self.order_date,
+            "received_date": self.received_date,
+            "status": self.status,
+            "products": self.products
         }
 
     @classmethod
     def get_orders_by_user(cls, user_id):
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(
-                    'SELECT id, supplier_id, order_date, total_amount FROM orders WHERE user_id = %s', (user_id,)
-                )
-                data = cursor.fetchall()
-
-        if not data:
-            raise DBError("No existen órdenes para este usuario.")
-
-        return [
-            {
-                "id": row[0],
-                "supplier_id": row[1],
-                "order_date": row[2],
-                "total_amount": row[3]
-            }
-            for row in data
-        ]
+                cursor.execute('SELECT * FROM purchase_orders WHERE user_id = %s', (user_id,))
+                orders = cursor.fetchall()
+                result = []
+                for order in orders:
+                    cursor.execute('SELECT * FROM order_products WHERE order_id = %s', (order[0],))
+                    products = cursor.fetchall()
+                    result.append({
+                        "id": order[0],
+                        "order_date": order[1],
+                        "received_date": order[2],
+                        "status": order[3],
+                        "products": [
+                            {
+                                "product_id": product[2],
+                                "quantity": product[3]
+                            } for product in products
+                        ]
+                    })
+        return result
 
     @classmethod
     def create_order(cls, user_id, data):
-        supplier_id = data.get("supplier_id")
         order_date = data.get("order_date")
-        total_amount = data.get("total_amount")
+        products = data.get("products")
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 try:
-                    # Verificar si el proveedor existe
+                    # Crear la orden en purchase_orders
                     cursor.execute(
-                        'SELECT id FROM suppliers WHERE id = %s AND user_id = %s', (supplier_id, user_id)
+                        'INSERT INTO purchase_orders (order_date, user_id) VALUES (%s, %s)',
+                        (order_date, user_id)
                     )
-                    supplier_exists = cursor.fetchone()
-                    if not supplier_exists:
-                        raise DBError("El proveedor especificado no existe para este usuario.")
+                    order_id = cursor.lastrowid  # Obtener el order_id generado
 
-                    # Crear la orden
-                    cursor.execute(
-                        'INSERT INTO orders (supplier_id, order_date, total_amount, user_id) VALUES (%s, %s, %s, %s)',
-                        (supplier_id, order_date, total_amount, user_id)
-                    )
+                    # Insertar los productos de la orden
+                    for product in products:
+                        cursor.execute(
+                            'INSERT INTO order_products (order_id, product_id, quantity) VALUES (%s, %s, %s)',
+                            (order_id, product["product_id"], product["quantity"])
+                        )
                     connection.commit()
 
-                except DBError as e:
-                    raise DBError(f"Error al crear la orden: {str(e)}")
                 except Exception as e:
-                    raise DBError(f"Error interno del servidor: {str(e)}")
+                    connection.rollback()
+                    raise DBError(f"Error al crear la orden: {e}")
 
-        return {"message": "Orden creada exitosamente"}, 201
+        return {"message": "Orden creada exitosamente"}, 200
 
     @classmethod
-    def update_order(cls, user_id, order_id, data):
-        supplier_id = data.get("supplier_id")
-        order_date = data.get("order_date")
-        total_amount = data.get("total_amount")
+    def update_order(cls, user_id, order_id, received_date):
+        new_status = 'completed'
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 try:
-                    # Verificar si el proveedor existe
-                    if supplier_id is not None:
-                        cursor.execute(
-                            'SELECT id FROM suppliers WHERE id = %s AND user_id = %s', (supplier_id, user_id)
-                        )
-                        supplier_exists = cursor.fetchone()
-                        if not supplier_exists:
-                            raise DBError("El proveedor especificado no existe para este usuario.")
+                    # Verificar el estado actual de la orden
+                    cursor.execute('SELECT status, order_date FROM purchase_orders WHERE id = %s AND user_id = %s', (order_id, user_id))
+                    current_status = cursor.fetchone()
+                    if not current_status:
+                        raise DBError("La orden no existe para este usuario.")
+                    if current_status[0] != 'pending':
+                        raise DBError("Solo se pueden completar órdenes que están en estado 'pendiente'.")
 
-                    # Actualizar la orden
+                    # Obtener la fecha de creación de la orden
+                    order_date = current_status[1]
+
+                    # Convertir las fechas a objetos datetime para compararlas
+                    received_date_obj = datetime.datetime.strptime(received_date, '%Y-%m-%d').date()
+                    order_date_obj = order_date
+
+                    # Verificar si la fecha de recepción es superior a la fecha de creación
+                    if received_date_obj < order_date_obj:
+                        raise DBError("La fecha de recepción no puede ser inferior a la fecha de creación de la orden.")
+
+                    # Obtener los productos de la orden y sus cantidades
                     cursor.execute(
-                        'UPDATE orders SET supplier_id = %s, order_date = %s, total_amount = %s WHERE id = %s AND user_id = %s',
-                        (supplier_id, order_date, total_amount, order_id, user_id)
+                        'SELECT product_id, quantity FROM order_products WHERE order_id = %s',
+                        (order_id,)
+                    )
+                    products = cursor.fetchall()
+                    if not products:
+                        raise DBError("No se encontraron productos para esta orden.")
+
+                    # Actualizar el stock para cada producto
+                    for product_id, quantity in products:
+                        cursor.execute(
+                            'SELECT quantity FROM stock WHERE product_id = %s AND user_id = %s',
+                            (product_id, user_id)
+                        )
+                        current_stock = cursor.fetchone()
+                        if not current_stock:
+                            raise DBError(f"El producto {product_id} no tiene stock asociado.")
+                        
+                        new_quantity = current_stock[0] + quantity
+                        cursor.execute(
+                            'UPDATE stock SET quantity = %s WHERE product_id = %s AND user_id = %s',
+                            (new_quantity, product_id, user_id)
+                        )
+
+                    # Actualizar el estado de la orden a 'completed' y establecer la fecha de recepción
+                    cursor.execute(
+                        'UPDATE purchase_orders SET status = %s, received_date = %s WHERE id = %s AND user_id = %s',
+                        (new_status, received_date, order_id, user_id)
                     )
                     connection.commit()
 
-                except DBError as e:
-                    raise DBError(f"Error al actualizar la orden: {str(e)}")
+                except Exception as e:
+                    connection.rollback()
+                    raise DBError(f"Error al actualizar la orden: {e}")
 
-        return {"message": "Orden actualizada exitosamente"}, 200
+        return {"message": "Orden actualizada y stock modificado exitosamente"}, 200
+
 
     @classmethod
     def delete_order(cls, user_id, order_id):
+        new_status = 'deleted'
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 try:
-                    # Verificar si la orden existe
+                    # Verificar si la orden existe y está en estado 'pending'
                     cursor.execute(
-                        'SELECT id FROM orders WHERE id = %s AND user_id = %s', (order_id, user_id)
+                        'SELECT status FROM purchase_orders WHERE id = %s AND user_id = %s',
+                        (order_id, user_id)
                     )
-                    existing_order = cursor.fetchone()
-                    if not existing_order:
+                    order_status = cursor.fetchone()
+
+                    if not order_status:
                         raise DBError("La orden no existe para este usuario.")
 
-                    # Eliminar la orden
+                    if order_status[0] != 'pending':
+                        raise DBError("Solo se pueden eliminar las órdenes en estado pendiente.")
+
+                    # Cambiar el estado de la orden a 'deleted'
                     cursor.execute(
-                        'DELETE FROM orders WHERE id = %s AND user_id = %s', (order_id, user_id)
+                        'UPDATE purchase_orders SET status = %s WHERE id = %s AND user_id = %s',
+                        (new_status, order_id, user_id)
                     )
                     connection.commit()
 
-                except DBError as e:
-                    raise DBError(f"Error al eliminar la orden: {str(e)}")
+                except Exception as e:
+                    connection.rollback()
+                    raise DBError(f"Error al intentar eliminar la orden: {e}")
 
         return {"message": "Orden eliminada exitosamente"}, 200
+
+
 
     @classmethod
     def get_order_by_id(cls, user_id, order_id):
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(
-                    'SELECT id, supplier_id, order_date, total_amount FROM orders WHERE id = %s AND user_id = %s',
-                    (order_id, user_id)
-                )
-                data = cursor.fetchone()
+                cursor.execute('SELECT * FROM purchase_orders WHERE id = %s AND user_id = %s', (order_id, user_id))
+                order = cursor.fetchone()
+                if not order:
+                    raise DBError("No existe la orden solicitada para este usuario.")
 
-        if not data:
-            raise DBError("No existe la orden solicitada para este usuario.")
+                cursor.execute('SELECT * FROM order_products WHERE order_id = %s', (order_id,))
+                products = cursor.fetchall()
 
         return {
-            "id": data[0],
-            "supplier_id": data[1],
-            "order_date": data[2],
-            "total_amount": data[3]
+            "id": order[0],
+            "order_date": order[1],
+            "received_date": order[2],
+            "status": order[3],
+            "products": [
+                {
+                    "product_id": product[2],
+                    "quantity": product[3]
+                } for product in products
+            ]
         }
-
