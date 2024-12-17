@@ -48,20 +48,45 @@ navLinks.forEach(link => {
     });
 });
 
+// Llenar la lista de productos
 function populateProductLists(products) {
     const productSelect = document.getElementById('productSelect');
-    productSelect.innerHTML = '<option value="">Seleccione un producto </option>';
+    productSelect.innerHTML = '<option value="">Seleccione un producto</option>';
+
+    if (!products.length) {
+        productSelect.innerHTML = '<option>No hay productos disponibles</option>';
+        return;
+    }
 
     products.forEach(product => {
         const option = document.createElement('option');
         option.value = product.id;
-        option.textContent = `${product.name} (ID: ${product.id})` ;
+        option.textContent = product.name;
         productSelect.appendChild(option);
+    });
+
+    // Agregar evento 'change' para cargar proveedores al seleccionar un producto
+    productSelect.addEventListener('change', () => {
+        const selectedProductId = productSelect.value;
+        if (selectedProductId) {
+            loadSuppliersByProduct(selectedProductId); // Nueva función para cargar proveedores por producto
+        } else {
+            document.getElementById('supplier-id').innerHTML = '<option value="">Seleccione un producto primero</option>';
+        }
     });
 }
 
-function loadProducts() {
-    fetch(apiURL + `/user/${user_id}/products`, {
+// Cargar productos asociados a un proveedor específico
+function loadProducts(supplierId = null) {
+    const productSelect = document.getElementById('productSelect');
+    productSelect.innerHTML = '<option value="">Cargando...</option>';
+
+    let url = apiURL + `/user/${user_id}/products`;
+    if (supplierId) {
+        url += `?supplier_id=${supplierId}`; // Filtrar por proveedor si existe el parámetro
+    }
+
+    fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -72,11 +97,16 @@ function loadProducts() {
     .then(result => {
         populateProductLists(result.data);
     })
-    .catch(error => showMessage(error.message, 'error', 'OrderListMessage'));
+    .catch(error => {
+        console.error('Error al cargar productos:', error);
+        productSelect.innerHTML = '<option>Error al cargar productos</option>';
+    });
 }
 
+// Cargar proveedores
 function loadSuppliers() {
     const supplierDropdown = document.getElementById('supplier-id');
+
     fetch(apiURL + `/user/${user_id}/suppliers`, {
         method: 'GET',
         headers: {
@@ -86,16 +116,9 @@ function loadSuppliers() {
     })
     .then(response => response.json())
     .then(data => {
+        supplierDropdown.innerHTML = '<option value="">-- Seleccione un proveedor --</option>';
+
         if (Array.isArray(data) && data.length > 0) {
-            supplierDropdown.innerHTML = '';
-
-            // Agregar opción predeterminada
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = '-- Seleccione un proveedor --';
-            defaultOption.value = '';
-            supplierDropdown.appendChild(defaultOption);
-
-            // Cargar proveedores en el dropdown
             data.forEach(supplier => {
                 const option = document.createElement('option');
                 option.value = supplier.id;
@@ -109,6 +132,49 @@ function loadSuppliers() {
     .catch(error => {
         console.error('Error cargando proveedores:', error);
         supplierDropdown.innerHTML = '<option>Error cargando proveedores</option>';
+    });
+
+    // Eliminamos este evento change:
+    // supplierDropdown.addEventListener('change', () => { ... });
+}
+
+// Función para cargar proveedores por producto seleccionado
+function loadSuppliersByProduct(productId) {
+    const supplierSelect = document.getElementById('supplier-id');
+    supplierSelect.innerHTML = '<option value="">Cargando...</option>';
+
+    fetch(apiURL + `/user/${user_id}/products/${productId}/supplier`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || "Error desconocido del servidor.");
+            });
+        }
+        return response.json();
+    })
+    .then(suppliers => {
+        supplierSelect.innerHTML = '<option value="">Seleccione un proveedor</option>'; // Limpiar opciones
+
+        if (Array.isArray(suppliers) && suppliers.length > 0) {
+            suppliers.forEach(supplier => {
+                const option = document.createElement('option');
+                option.value = supplier.id;
+                option.textContent = `${supplier.name_supplier} (ID: ${supplier.id})`;
+                supplierSelect.appendChild(option);
+            });
+        } else {
+            supplierSelect.innerHTML = '<option value="">No hay proveedores para este producto</option>';
+        }
+    })
+    .catch(error => {
+        console.error('Error al cargar proveedores:', error);
+        supplierSelect.innerHTML = '<option value="">Error al cargar proveedores</option>';
     });
 }
 
@@ -176,7 +242,6 @@ function fetchPurchaseOrders() {
         return response.json();
     })
     .then(result => { // Cambiamos de 'orders' a 'result' para reflejar el objeto completo
-        console.log(result); // Verificar el contenido de la respuesta
         // Verifica si la propiedad 'data' es un arreglo
         if (!Array.isArray(result.data)) {
             throw new Error('La respuesta no es un arreglo de órdenes.');
@@ -187,6 +252,36 @@ function fetchPurchaseOrders() {
         showMessage(`Error: ${error.message}`, 'error', 'OrderListMessage');
     });
 }
+
+// Función para mostrar la ventana modal con los detalles de la orden
+function showOrderDetails(order) {
+    const modal = document.getElementById('orderModal');
+    const modalContent = document.getElementById('modal-order-details');
+    modalContent.innerHTML = ''; // Limpiar contenido anterior
+
+    const orderInfo = `
+        <div>
+            <strong>ID:</strong> ${order.id}<br>
+            <strong>Fecha de Orden:</strong> ${order.order_date}<br>
+            <strong>Fecha de Recepción:</strong> ${order.received_date || 'Pendiente'}<br>
+            <strong>Estado:</strong> ${order.status}<br>
+            <strong>Productos:</strong>
+            <ul>
+                ${order.products.map(product => `
+                    <li>Producto ID: ${product.product_id}, Cantidad: ${product.quantity}</li>
+                `).join('')}
+            </ul>
+        </div>
+    `;
+
+    modalContent.innerHTML = orderInfo;
+    modal.style.display = 'block'; // Mostrar la ventana modal
+}
+
+// Función para cerrar la ventana modal
+document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('orderModal').style.display = 'none';
+});
 
 function renderPurchaseOrders(orders) {
     const orderListContainer = document.getElementById('order-list'); // Asumiendo que tienes un contenedor para órdenes
@@ -202,34 +297,35 @@ function renderPurchaseOrders(orders) {
         orderElement.className = 'order';
 
         const orderInfo = `
-            <div>
-                <strong>ID:</strong> ${order.id}<br>
-                <strong>Fecha de Orden:</strong> ${order.order_date}<br>
-                <strong>Fecha de Recepción:</strong> ${order.received_date || 'Pendiente'}<br>
-                <strong>Estado:</strong> ${order.status}<br>
-                <strong>Productos:</strong>
-                <ul>
-                    ${order.products.map(product => `
-                        <li>Producto ID: ${product.product_id}, Cantidad: ${product.quantity}</li>
-                    `).join('')}
-                </ul>
-                <button class="delete-order-btn" data-order-id="${order.id}">Eliminar Orden</button>
-            </div>
+            <strong>ID:</strong> ${order.id}
+            <strong>Estado:</strong> ${order.status}
+            <button class="view-details-btn" data-order-id="${order.id}">Ver Detalles</button>
+            <button class="delete-order-btn" data-order-id="${order.id}">Eliminar Orden</button>
         `;
 
         orderElement.innerHTML = orderInfo;
         orderListContainer.appendChild(orderElement);
-    });
+        
+        // Agregar evento al botón "Ver Detalles"
+        const viewDetailsButton = orderElement.querySelector('.view-details-btn');
+        viewDetailsButton.addEventListener('click', () => {
+            showOrderDetails(order); // Mostrar la ventana modal con los detalles de la orden
+        });
 
-    // Add event listeners for delete buttons
-    const deleteButtons = document.querySelectorAll('.delete-order-btn');
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const orderId = button.getAttribute('data-order-id');
-            deleteOrder(orderId);
+        // Agregar evento al botón "Eliminar Orden"
+        const deleteButton = orderElement.querySelector('.delete-order-btn');
+        deleteButton.addEventListener('click', () => {
+            if (confirm('¿Estás seguro de que deseas eliminar esta orden?')) {
+                deleteOrder(order.id).then(() => {
+                    // Actualizar la lista de órdenes después de eliminar
+                    renderPurchaseOrders(updatedOrders); // Asumiendo que tienes una función que obtiene las órdenes actualizadas
+                }).catch(error => {
+                    console.error('Error al eliminar la orden:', error);
+                    alert('No se pudo eliminar la orden. Intenta de nuevo.');
+                });
+            }
         });
     });
-
 }
 
 // Function to delete an order

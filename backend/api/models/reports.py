@@ -10,10 +10,14 @@ class Report:
             with connection.cursor() as cursor:
                 cursor.execute(
                     '''
-                    SELECT o.order_date, s.name AS supplier_name, o.total_amount
-                    FROM orders o
+                    SELECT o.order_date, s.name_supplier AS supplier_name, 
+                           SUM(op.quantity * p.price) AS total_amount
+                    FROM purchase_orders o
+                    JOIN order_products op ON o.id = op.order_id
+                    JOIN products p ON op.product_id = p.id
                     JOIN suppliers s ON o.supplier_id = s.id
                     WHERE o.user_id = %s AND o.order_date BETWEEN %s AND %s
+                    GROUP BY o.id, s.name_supplier
                     ORDER BY o.order_date ASC
                     ''',
                     (user_id, start_date, end_date)
@@ -37,8 +41,8 @@ class Report:
             with connection.cursor() as cursor:
                 cursor.execute(
                     '''
-                    SELECT s.name AS supplier_name, COUNT(o.id) AS total_orders
-                    FROM orders o
+                    SELECT s.name_supplier AS supplier_name, COUNT(o.id) AS total_orders
+                    FROM purchase_orders o
                     JOIN suppliers s ON o.supplier_id = s.id
                     WHERE o.user_id = %s
                     GROUP BY s.id
@@ -69,7 +73,7 @@ class Report:
                     SELECT p.name AS product_name, SUM(op.quantity) AS total_quantity
                     FROM order_products op
                     JOIN products p ON op.product_id = p.id
-                    JOIN orders o ON op.order_id = o.id
+                    JOIN purchase_orders o ON op.order_id = o.id
                     WHERE o.user_id = %s
                     GROUP BY p.id
                     ORDER BY total_quantity DESC
@@ -96,8 +100,11 @@ class Report:
             with connection.cursor() as cursor:
                 cursor.execute(
                     '''
-                    SELECT s.name AS supplier_name, SUM(o.total_amount) AS total_spent
-                    FROM orders o
+                    SELECT s.name_supplier AS supplier_name, 
+                           SUM(op.quantity * p.price) AS total_spent
+                    FROM purchase_orders o
+                    JOIN order_products op ON o.id = op.order_id
+                    JOIN products p ON op.product_id = p.id
                     JOIN suppliers s ON o.supplier_id = s.id
                     WHERE o.user_id = %s
                     GROUP BY s.id
