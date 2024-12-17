@@ -55,7 +55,7 @@ function populateProductLists(products) {
     products.forEach(product => {
         const option = document.createElement('option');
         option.value = product.id;
-        option.textContent = product.name;
+        option.textContent = `${product.name} (ID: ${product.id})` ;
         productSelect.appendChild(option);
     });
 }
@@ -154,6 +154,7 @@ function registerPurchaseOrder() {
         showMessage('orden registrada exitosamente.', 'success', 'OrderRegisterMessage');
         document.getElementById('order-form').reset();
         loadProducts(); // Llama a la función para actualizar la lista de productos
+        fetchPurchaseOrders();
     })
     .catch(error => {
         showMessage(error.message, 'error', 'OrderRegisterMessage');
@@ -212,10 +213,51 @@ function renderPurchaseOrders(orders) {
                         <li>Producto ID: ${product.product_id}, Cantidad: ${product.quantity}</li>
                     `).join('')}
                 </ul>
+                <button class="delete-order-btn" data-order-id="${order.id}">Eliminar Orden</button>
             </div>
         `;
 
         orderElement.innerHTML = orderInfo;
         orderListContainer.appendChild(orderElement);
+    });
+
+    // Add event listeners for delete buttons
+    const deleteButtons = document.querySelectorAll('.delete-order-btn');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const orderId = button.getAttribute('data-order-id');
+            deleteOrder(orderId);
+        });
+    });
+
+}
+
+// Function to delete an order
+function deleteOrder(orderId) {
+    if (!user_id || !token) {
+        alert('No estás autenticado para eliminar órdenes.');
+        return;
+    }
+    fetch(apiURL + `/user/${user_id}/orders/${orderId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token // Asegúrate de pasar el token del usuario para la autenticación
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al eliminar la orden');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);
+        // Optionally, re-fetch and render the orders after deletion
+        fetchPurchaseOrders(); // Function to fetch and render orders again
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('No se pudo eliminar la orden.');
     });
 }
