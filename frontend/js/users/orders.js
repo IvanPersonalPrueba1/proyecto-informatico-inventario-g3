@@ -284,8 +284,8 @@ document.getElementById('closeModal').addEventListener('click', () => {
 });
 
 function renderPurchaseOrders(orders) {
-    const orderListContainer = document.getElementById('order-list'); // Asumiendo que tienes un contenedor para órdenes
-    orderListContainer.innerHTML = ''; // Limpia las órdenes existentes
+    const orderListContainer = document.getElementById('order-list');
+    orderListContainer.innerHTML = '';
 
     if (orders.length === 0) {
         orderListContainer.innerHTML = '<p>No hay órdenes de compra registradas.</p>';
@@ -296,37 +296,65 @@ function renderPurchaseOrders(orders) {
         const orderElement = document.createElement('div');
         orderElement.className = 'order';
 
+        // Determinar si los botones deben estar habilitados o no basado en order.status
+        const isPending = order.status === 'pending';
+        const confirmButtonDisabledAttribute = isPending ? '' : 'disabled';
+        const deleteButtonDisabledAttribute = isPending ? '' : 'disabled'; // Aplicar la misma lógica al botón Eliminar
+
         const orderInfo = `
             <strong>ID:</strong> ${order.id}
             <strong>Estado:</strong> ${order.status}
             <button class="view-details-btn" data-order-id="${order.id}">Ver Detalles</button>
-            <button class="delete-order-btn" data-order-id="${order.id}">Eliminar Orden</button>
-        `;
+            <button class="delete-order-btn" data-order-id="${order.id}" ${deleteButtonDisabledAttribute}>Eliminar Orden</button>
+            <button class="confirm-order-btn" data-order-id="${order.id}" ${confirmButtonDisabledAttribute}>Confirmar</button>`;
 
         orderElement.innerHTML = orderInfo;
         orderListContainer.appendChild(orderElement);
-        
-        // Agregar evento al botón "Ver Detalles"
+
+        // Evento para el botón "Ver Detalles"
         const viewDetailsButton = orderElement.querySelector('.view-details-btn');
         viewDetailsButton.addEventListener('click', () => {
-            showOrderDetails(order); // Mostrar la ventana modal con los detalles de la orden
+            showOrderDetails(order);
         });
 
-        // Agregar evento al botón "Eliminar Orden"
+        // Evento para el botón "Eliminar Orden"
         const deleteButton = orderElement.querySelector('.delete-order-btn');
         deleteButton.addEventListener('click', () => {
-            if (confirm('¿Estás seguro de que deseas eliminar esta orden?')) {
-                deleteOrder(order.id).then(() => {
-                    // Actualizar la lista de órdenes después de eliminar
-                    renderPurchaseOrders(updatedOrders); // Asumiendo que tienes una función que obtiene las órdenes actualizadas
-                }).catch(error => {
-                    console.error('Error al eliminar la orden:', error);
-                    alert('No se pudo eliminar la orden. Intenta de nuevo.');
-                });
+            // Verificar si el estado es "pending" antes de proceder
+            if (order.status === 'pending') {
+                if (confirm('¿Estás seguro de que deseas eliminar esta orden?')) {
+                    deleteOrder(order.id).then(() => {
+                        fetchPurchaseOrders(); // Actualiza la lista después de eliminar
+                    }).catch(error => {
+                        console.error('Error al eliminar la orden:', error);
+                        alert('No se pudo eliminar la orden. Intenta de nuevo.');
+                    });
+                }
+            } else {
+                alert('Solo las órdenes pendientes pueden ser eliminadas.');
+            }
+        });
+
+        // Evento para el botón "Confirmar"
+        const confirmButton = orderElement.querySelector('.confirm-order-btn');
+        confirmButton.addEventListener('click', () => {
+            // Verificar si el estado es "pending" antes de proceder
+            if (order.status === 'pending') {
+                if (confirm('¿Estás seguro de que deseas confirmar esta orden?')) {
+                    confirmOrder(order.id).then(() => {
+                        fetchPurchaseOrders(); // Actualiza la lista después de confirmar
+                    }).catch(error => {
+                        console.error('Error al confirmar la orden:', error);
+                        alert('No se pudo confirmar la orden. Intenta de nuevo.');
+                    });
+                }
+            } else {
+                alert('Solo las órdenes pendientes pueden ser confirmadas.');
             }
         });
     });
 }
+
 
 // Function to delete an order
 function deleteOrder(orderId) {
@@ -334,26 +362,62 @@ function deleteOrder(orderId) {
         alert('No estás autenticado para eliminar órdenes.');
         return;
     }
+
     fetch(apiURL + `/user/${user_id}/orders/${orderId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token // Asegúrate de pasar el token del usuario para la autenticación
+            'x-access-token': token
         }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error al eliminar la orden');
+            // Leer el cuerpo de la respuesta para obtener el mensaje de error específico
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || 'Error al eliminar la orden'); // Usa el mensaje de la API o un mensaje genérico si no hay mensaje
+            });
         }
         return response.json();
     })
     .then(data => {
         alert(data.message);
-        // Optionally, re-fetch and render the orders after deletion
-        fetchPurchaseOrders(); // Function to fetch and render orders again
+        fetchPurchaseOrders();
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('No se pudo eliminar la orden.');
+        alert(error.message || 'No se pudo eliminar la orden.'); // Muestra el mensaje de error específico o un mensaje genérico
+    });
+}
+
+function confirmOrder(orderId) {
+    return new Promise((resolve, reject) => {
+        if (!user_id || !token) {
+            reject('No estás autenticado para confirmar órdenes.');
+            return;
+        }
+
+        fetch(apiURL + `/user/${user_id}/orders/${orderId}`, {
+            method: 'PUT',
+            headers: {
+                'x-access-token': token // Ya no incluimos 'Content-Type': 'application/json'
+            },
+            body: null // Enviamos body como null
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Error al confirmar la orden');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message);
+            resolve();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            reject(error.message || 'No se pudo confirmar la orden.');
+        });
     });
 }

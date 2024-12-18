@@ -114,30 +114,20 @@ class Order:
         return {"message": "Orden creada exitosamente"}, 200
 
     @classmethod
-    def update_order(cls, user_id, order_id, received_date):
+    def update_order(cls, user_id, order_id, received_date=None):  # Agregamos received_date como parámetro opcional
         new_status = 'completed'
+        received_date = received_date or datetime.date.today()  # Asignar fecha actual si no se proporciona
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 try:
                     # Verificar el estado actual de la orden
-                    cursor.execute('SELECT status, order_date FROM purchase_orders WHERE id = %s AND user_id = %s', (order_id, user_id))
+                    cursor.execute('SELECT status FROM purchase_orders WHERE id = %s AND user_id = %s', (order_id, user_id))
                     current_status = cursor.fetchone()
                     if not current_status:
                         raise DBError("La orden no existe para este usuario.")
                     if current_status[0] != 'pending':
                         raise DBError("Solo se pueden completar órdenes que están en estado 'pendiente'.")
-
-                    # Obtener la fecha de creación de la orden
-                    order_date = current_status[1]
-
-                    # Convertir las fechas a objetos datetime para compararlas
-                    received_date_obj = datetime.datetime.strptime(received_date, '%Y-%m-%d').date()
-                    order_date_obj = order_date
-
-                    # Verificar si la fecha de recepción es superior a la fecha de creación
-                    if received_date_obj < order_date_obj:
-                        raise DBError("La fecha de recepción no puede ser inferior a la fecha de creación de la orden.")
 
                     # Obtener los productos de la orden y sus cantidades
                     cursor.execute(
@@ -157,7 +147,7 @@ class Order:
                         current_stock = cursor.fetchone()
                         if not current_stock:
                             raise DBError(f"El producto {product_id} no tiene stock asociado.")
-                        
+
                         new_quantity = current_stock[0] + quantity
                         cursor.execute(
                             'UPDATE stock SET quantity = %s WHERE product_id = %s AND user_id = %s',
@@ -169,6 +159,7 @@ class Order:
                         'UPDATE purchase_orders SET status = %s, received_date = %s WHERE id = %s AND user_id = %s',
                         (new_status, received_date, order_id, user_id)
                     )
+
                     connection.commit()
 
                 except Exception as e:
@@ -176,7 +167,7 @@ class Order:
                     raise DBError(f"Error al actualizar la orden: {e}")
 
         return {"message": "Orden actualizada y stock modificado exitosamente"}, 200
-
+        
 
     @classmethod
     def delete_order(cls, user_id, order_id):

@@ -3,6 +3,8 @@ from flask import request, jsonify
 from api.models.orders import Order
 from api.db.db_config import DBError
 from api.utils.security import token_required
+import datetime
+
 
 @app.route('/user/<int:user_id>/orders', methods=['GET'])
 @token_required
@@ -35,42 +37,27 @@ def create_order(user_id):
 @token_required
 def update_order(user_id, order_id):
     """
-    Actualiza una orden existente.
-
-    ---
-    parameters:
-      - name: user_id
-        in: path
-        type: integer
-        required: true
-        description: ID del usuario que creó la orden.
-      - name: order_id
-        in: path
-        type: integer
-        required: true
-        description: ID de la orden a actualizar.
-      - name: received_date
-        in: body
-        type: string
-        required: true
-        description: Fecha de recepción de la orden (YYYY-MM-DD).
-    responses:
-      200:
-        description: Orden actualizada exitosamente.
-      400:
-        description: Datos inválidos o error al actualizar la orden.
-      404:
-        description: Orden no encontrada para este usuario.
-      500:
-        description: Error interno del servidor.
+    Confirma una orden de compra, actualizando su estado a 'completado' y asignando la fecha de recepción.
     """
-    data = request.get_json()
-    received_date = data.get("received_date")
+    received_date = None  # Inicializar como None por defecto
 
-    if not received_date or not isinstance(received_date, str):
-        return jsonify({"error": "Fecha de recepción inválida"}), 400
+    data = request.get_data()  # Obtener cuerpo de la solicitud
+    if data:  # Si se recibe un cuerpo, procesarlo
+        try:
+            data = request.get_json()
+            received_date = data.get("received_date")
+
+            # Validar el formato de la fecha en caso de que se reciba
+            if received_date:
+                try:
+                    datetime.datetime.strptime(received_date, '%Y-%m-%d')  # Validar formato
+                except ValueError:
+                    return jsonify({"error": "Formato de fecha inválido. Usa YYYY-MM-DD."}), 400
+        except Exception as e:
+            return jsonify({"error": "Error al decodificar el JSON."}), 400
 
     try:
+        # Llamar al modelo con received_date (puede ser None o la fecha proporcionada)
         message, status_code = Order.update_order(user_id, order_id, received_date)
         return jsonify(message), status_code
     except DBError as e:
