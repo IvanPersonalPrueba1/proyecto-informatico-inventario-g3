@@ -1,0 +1,38 @@
+---
+
+
+### 1. Método `purchases_summary_by_period`
+```sql
+SELECT purchase_orders.order_date, suppliers.name_supplier, 
+       SUM(order_products.quantity * products.price)
+FROM purchase_orders
+JOIN order_products ON purchase_orders.id = order_products.order_id
+JOIN products ON order_products.product_id = products.id
+JOIN suppliers ON purchase_orders.supplier_id = suppliers.id
+WHERE purchase_orders.user_id = %s AND purchase_orders.order_date BETWEEN %s AND %s
+GROUP BY purchase_orders.id, suppliers.name_supplier
+ORDER BY purchase_orders.order_date ASC
+```
+
+### 2. Método `top_suppliers`
+```sql
+SELECT suppliers.name_supplier, COUNT(purchase_orders.id)
+FROM purchase_orders
+JOIN suppliers ON purchase_orders.supplier_id = suppliers.id
+WHERE purchase_orders.user_id = %s
+GROUP BY suppliers.id
+ORDER BY COUNT(purchase_orders.id) DESC
+LIMIT %s
+```
+
+### 3. Método `top_products`
+```sql
+SELECT products.name, SUM(order_products.quantity)
+FROM order_products
+JOIN products ON order_products.product_id = products.id
+JOIN purchase_orders ON order_products.order_id = purchase_orders.id
+WHERE purchase_orders.user_id = %s
+GROUP BY products.id
+ORDER BY SUM(order_products.quantity) DESC
+LIMIT %s
+```

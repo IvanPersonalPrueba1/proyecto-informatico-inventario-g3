@@ -40,12 +40,3 @@ def report_top_products(user_id):
         return jsonify({"data": data}), 200
     except DBError as e:
         return jsonify({"error": str(e)}), 404
-
-@app.route('/user/<int:user_id>/reports/total-expenses', methods=['GET'])
-@token_required
-def report_total_expenses(user_id):
-    try:
-        data = Report.total_expenses_by_supplier(user_id)
-        return jsonify({"data": data}), 200
-    except DBError as e:
-        return jsonify({"error": str(e)}), 404

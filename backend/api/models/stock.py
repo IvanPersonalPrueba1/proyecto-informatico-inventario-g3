@@ -136,7 +136,7 @@ class Stock:
         
         try:
             cursor.execute(
-                'SELECT * FROM stock WHERE quantity <= %s AND user_id = %s',
+                'SELECT stock.product_id, products.name, stock.quantity FROM stock JOIN products ON stock.product_id = products.id WHERE stock.quantity <= %s AND stock.user_id = %s',
                 (threshold, user_id)
             )
             data = cursor.fetchall()
@@ -178,9 +178,9 @@ class Stock:
         try:
             # Consulta que selecciona tanto el ID como el nombre del producto
             cursor.execute('''
-                SELECT product_id, product_name, quantity
-                FROM stock
-                WHERE user_id = %s
+                SELECT stock.product_id, products.name, stock.quantity
+                FROM stock JOIN products ON stock.product_id = products.id
+                WHERE stock.user_id = %s
             ''', (user_id,))
             
             data = cursor.fetchall()

@@ -135,7 +135,9 @@ function checkLowStock() {
 }
 
 function updateStock() {
-    const product_id = document.getElementById('productId').value;
+    const productSelect = document.getElementById('productId');
+    const product_id = productSelect.value; // Obtener el ID del producto seleccionado
+    const product_name = productSelect.options[productSelect.selectedIndex].text; // Obtener el nombre del producto seleccionado    
     const newQuantity = document.getElementById('newQuantity').value;
     const user_id = localStorage.getItem('id');
     const token = localStorage.getItem('token');
@@ -145,7 +147,7 @@ function updateStock() {
         return;
     }
 
-    if (!confirm(`¿Está seguro que desea actualizar el producto ${product_id} a una cantidad de ${newQuantity} unidades?`)) {
+    if (!confirm(`¿Está seguro que desea actualizar el producto "${product_name}" (ID :${product_id}) a una cantidad de ${newQuantity} unidades?`)) {
         return;
     }
 
@@ -166,7 +168,8 @@ function updateStock() {
     })
     .catch(error => handleFetchError(error))
     .finally(() => stopSpinner());
-    
+    loadProducts(user_id, token); // Cargar productos en el dropdown
+    loadProductsInStock(user_id, token);
     checkLowStock(); // Recargar la lista de productos con bajo stock
 }
 

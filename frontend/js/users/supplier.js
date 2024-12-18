@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Cargar proveedores en el desplegable
         loadSuppliers(user_id, token);
 
+        loadProductsSelect(user_id, token);
+
         // Configurar el evento de clic para el botón de registrar proveedor
         const registerSupplierBtn = document.getElementById('registerSupplierBtn');
         if (registerSupplierBtn) {
@@ -318,3 +320,31 @@ navLinks.forEach(link => {
         sidebar.classList.remove('visible');
     });
 });
+
+function populateProductLists(products) {
+    const productSelect = document.getElementById('consult_product_id');
+
+    productSelect.innerHTML = '';
+
+    products.forEach(product => {
+        const option = document.createElement('option');
+        option.value = product.id;
+        option.textContent = product.name;
+        productSelect.appendChild(option);
+    });
+}
+
+function loadProductsSelect(user_id, token) {
+    fetch(apiURL + `/user/${user_id}/products`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+        }
+    })
+    .then(response => handleResponse(response))
+    .then(result => {
+        populateProductLists(result.data);
+    })
+    .catch(error => showMessage(error.message, 'error', 'ProductListMessage'));
+}

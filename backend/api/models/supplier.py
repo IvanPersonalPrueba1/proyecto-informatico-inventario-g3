@@ -264,10 +264,10 @@ class Supplier:
             # Obtener los proveedores asociados al producto
             cursor.execute(
                 '''
-                SELECT p.id, p.name_supplier, p.phone, p.mail, p.user_id 
-                FROM suppliers p
-                JOIN suppliers_products pp ON p.id = pp.supplier_id
-                WHERE pp.product_id = %s AND p.user_id = %s
+                SELECT suppliers.id, suppliers.name_supplier, suppliers.phone, suppliers.mail, suppliers.user_id 
+                FROM suppliers
+                JOIN suppliers_products ON suppliers.id = suppliers_products.supplier_id
+                WHERE suppliers_products.product_id = %s AND suppliers.user_id = %s
                 ''',
                 (product_id, user_id)
             )
@@ -279,13 +279,13 @@ class Supplier:
             # Transformar los resultados en formato JSON
             supplier_json = [
                 {
-                    "id": p[0],
-                    "name_supplier": p[1],
-                    "phone": p[2],
-                    "mail": p[3],
-                    "user_id": p[4]
+                    "id": i[0],
+                    "name_supplier": i[1],
+                    "phone": i[2],
+                    "mail": i[3],
+                    "user_id": i[4]
                 }
-                for p in suppliers
+                for i in suppliers
             ]
 
             cursor.close()

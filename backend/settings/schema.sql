@@ -28,7 +28,6 @@ CREATE TABLE products (
 -- Crear tabla de stock
 CREATE TABLE stock (
     product_id INT NOT NULL PRIMARY KEY,
-    product_name VARCHAR(255) NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
     user_id INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
@@ -83,8 +82,8 @@ CREATE TRIGGER after_product_insert
 AFTER INSERT ON products
 FOR EACH ROW
 BEGIN
-    INSERT INTO stock (product_id, product_name, quantity, user_id)
-    VALUES (NEW.id, NEW.name, 0, NEW.user_id);
+    INSERT INTO stock (product_id, quantity, user_id)
+    VALUES (NEW.id, 0, NEW.user_id);
 END$$
 
 DELIMITER ;

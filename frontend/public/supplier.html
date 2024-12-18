@@ -17,10 +17,10 @@
         <nav>
             <ul>
                 <li><a href="dashboard.html">Inicio</a></li>
-                <li><a href="stock.html">Gestión de Stock</a></li>
-                <li><a href="supplier.html">Gestión de Proveedores</a></li>
                 <li><a href="products.html">Gestión de Productos</a></li>
                 <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
                 <li><a href="orders.html">Órdenes de Compra</a></li>
                 <li><a href="reports.html">Reportes</a></li>
             </ul>
@@ -78,7 +78,7 @@
         <h3>Consultar Proveedores por Producto</h3>
         <form id="getSuppliersByProductForm">
             <label for="consult_product_id">ID del Producto:</label>
-            <input type="number" id="consult_product_id" name="consult_product_id" required>
+            <select id="consult_product_id" name="consult_product_id" required></select>
             <button type="button" id="getSuppliersBtn">Consultar Proveedores</button>
         </form>
         <p id="suppliersListMessage"></p>

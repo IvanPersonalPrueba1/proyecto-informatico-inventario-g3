@@ -90,34 +90,3 @@ class Report:
             {"product_name": row[0], "total_quantity": row[1]}
             for row in data
         ]
-
-    @staticmethod
-    def total_expenses_by_supplier(user_id):
-        """
-        Obtiene los gastos totales realizados a cada proveedor por el usuario.
-        """
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    '''
-                    SELECT s.name_supplier AS supplier_name, 
-                           SUM(op.quantity * p.price) AS total_spent
-                    FROM purchase_orders o
-                    JOIN order_products op ON o.id = op.order_id
-                    JOIN products p ON op.product_id = p.id
-                    JOIN suppliers s ON o.supplier_id = s.id
-                    WHERE o.user_id = %s
-                    GROUP BY s.id
-                    ORDER BY total_spent DESC
-                    ''',
-                    (user_id,)
-                )
-                data = cursor.fetchall()
-
-        if not data:
-            raise DBError("No se encontraron gastos registrados para los proveedores.")
-
-        return [
-            {"supplier_name": row[0], "total_spent": row[1]}
-            for row in data
-        ]
