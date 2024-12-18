@@ -1,36 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Cargar el token de localStorage
     const token = localStorage.getItem('token');
+    const user_id = localStorage.getItem('id');
     if (!token) {
         // Si no existe un token, se redirige a la página de login
         window.location.href = "login.html";
     } else {
-        loadCategories(); // Cargar las categorías cuando la página se carga
+        loadCategories(user_id, token); // Cargar las categorías cuando la página se carga
     }
 
     // Añadir evento al formulario para registrar una nueva categoría
     document.getElementById('registerCategoryForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
-        registerCategory(); // Llamar a la función para registrar la categoría
+        registerCategory(user_id, token); // Llamar a la función para registrar la categoría
     });
 
     // Añadir evento al formulario para registrar una nueva categoría
     document.getElementById('updateCategoryForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
-        updateCategory(); // Llamar a la función para registrar la categoría
+        updateCategory(user_id, token); // Llamar a la función para registrar la categoría
     });
 });
-
-// Se cargan globalmente los datos de usuario
-const token = localStorage.getItem('token');
-const user_id = localStorage.getItem('id');
 
 const username = localStorage.getItem('username');
 document.getElementById("Welcome_username").innerHTML = username;
 
 // Función para cargar las categorías en el desplegable
-function loadCategories() {
-    fetch(`http://localhost:5000/user/${user_id}/categories`, {
+function loadCategories(user_id, token) {
+    fetch(apiURL + `/user/${user_id}/categories`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -67,7 +64,7 @@ function loadCategories() {
 }
 
 // Función para registrar una nueva categoría
-function registerCategory() {
+function registerCategory(user_id, token) {
     const name = document.getElementById('name_category').value;
     const description = document.getElementById('description').value;
 
@@ -81,7 +78,7 @@ function registerCategory() {
         descripcion: description
     };
 
-    fetch(`http://localhost:5000/user/${user_id}/categories`, {
+    fetch(apiURL + `/user/${user_id}/categories`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -109,7 +106,7 @@ function registerCategory() {
 
 
 // Función para modificar una categoría existente
-function updateCategory() {
+function updateCategory(user_id, token) {
     const category_id = document.getElementById('category_id').value;
     const new_name = document.getElementById('new_name_category').value;
     const new_description = document.getElementById('new_description').value;
@@ -124,7 +121,7 @@ function updateCategory() {
         descripcion: new_description
     };
 
-    fetch(`http://localhost:5000/user/${user_id}/categories/${category_id}`, {
+    fetch(apiURL + `/user/${user_id}/categories/${category_id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

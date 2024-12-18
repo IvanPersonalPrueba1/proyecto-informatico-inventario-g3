@@ -1,3 +1,14 @@
+const username = localStorage.getItem('username');
+document.getElementById("Welcome_username").innerHTML = username;
+
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "login.html";
+    } else {
+    }
+});
+
 // Accesibilidad y funcionalidad del sidenav
 const openSidebarButton = document.getElementById('openSidebar');
 const closeSidebarButton = document.getElementById('closeSidebar');
@@ -24,12 +35,8 @@ navLinks.forEach(link => {
     });
 });
 
-
 // Función para cerrar la sesión del usuario
 function userLogout() {
     localStorage.clear(); // Limpia todos los datos del almacenamiento
     window.location.href = "login.html";
 }
-
-const username = localStorage.getItem('username');
-document.getElementById("Welcome_username").innerHTML = username;
