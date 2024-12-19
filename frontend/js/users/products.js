@@ -1,22 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
+    const user_id = localStorage.getItem('id');
     if (!token) {
         window.location.href = "login.html";
     } else {
-        loadCategories(); // Llenar el select de categorías
-        loadProducts();
+        loadCategories(user_id, token); // Llenar el select de categorías
+        loadProducts(user_id, token);
     }
 
     // Event listeners for form submissions
-    document.getElementById('createProductForm').addEventListener('submit', handleFormSubmission(registerProduct));
-    document.getElementById('updateProductForm').addEventListener('submit', handleFormSubmission(updateProduct));
-    document.getElementById('deleteProductForm').addEventListener('submit', handleFormSubmission(deleteProduct));
-    document.getElementById('listProductsByCategoryForm').addEventListener('submit', handleFormSubmission(loadProductsByCategory));
+    document.getElementById('createProductForm').addEventListener('submit', handleFormSubmission(registerProduct(user_id, token)));
+    document.getElementById('updateProductForm').addEventListener('submit', handleFormSubmission(updateProduct(user_id, token)));
+    document.getElementById('deleteProductForm').addEventListener('submit', handleFormSubmission(deleteProduct(user_id, token)));
+    document.getElementById('listProductsByCategoryForm').addEventListener('submit', handleFormSubmission(loadProductsByCategory(user_id, token)));
 });
 
-// Variables globales
-const token = localStorage.getItem('token');
-const user_id = localStorage.getItem('id');
 const username = localStorage.getItem('username');
 document.getElementById("Welcome_username").innerHTML = username;
 
@@ -31,7 +29,7 @@ function handleFormSubmission(callback) {
     };
 }
 
-function loadCategories() {
+function loadCategories(user_id, token) {
     fetch(apiURL + `/user/${user_id}/categories`, {
         method: 'GET',
         headers: {
@@ -61,7 +59,7 @@ function populateCategorySelect(categories, selectId) {
     });
 }
 
-function loadProducts() {
+function loadProducts(user_id, token) {
     fetch(apiURL + `/user/${user_id}/products`, {
         method: 'GET',
         headers: {
@@ -76,7 +74,7 @@ function loadProducts() {
     .catch(error => showMessage(error.message, 'error', 'ProductListMessage'));
 }
 
-function registerProduct() {
+function registerProduct(user_id, token) {
     const data = collectProductData('create');
     if (!data) return; // Si hay datos inválidos, sale
 
@@ -105,7 +103,7 @@ function registerProduct() {
 }
 
 
-function updateProduct() {
+function updateProduct(user_id, token) {
     const productId = document.getElementById('productSelectUpdate').value;
     const data = collectProductData('update', productId);
     if (!data) return;
@@ -127,7 +125,7 @@ function updateProduct() {
     .catch(error => showMessage(error.message, 'error', 'updateProductMessage'));
 }
 
-function deleteProduct() {
+function deleteProduct(user_id, token) {
     const productId = document.getElementById('productSelectDelete').value;
     if (!productId) {
         showMessage('Seleccione un producto para eliminar.', 'error', 'deleteProductMessage');
@@ -149,7 +147,7 @@ function deleteProduct() {
     .catch(error => showMessage(error.message, 'error', 'deleteProductMessage'));
 }
 
-function loadProductsByCategory() {
+function loadProductsByCategory(user_id, token) {
     const categoryId = document.getElementById('categorySelectFilter').value;
     if (!categoryId) {
         showMessage('Seleccione una categoría.', 'error', 'listProductsByCategoryMessage');

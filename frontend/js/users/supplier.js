@@ -59,7 +59,7 @@ function showMessage(text, type) {
 function loadProducts(user_id, token) {
     const productDropdown = document.getElementById('product_id');
 
-    fetch(`http://localhost:5000/user/${user_id}/stock`, {
+    fetch(apiURL + `/user/${user_id}/stock`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ function loadProducts(user_id, token) {
 // Cargar proveedores en el dropdown
 function loadSuppliers(user_id, token) {
     const supplierDropdown = document.getElementById('supplier_id');
-    fetch(`http://localhost:5000/user/${user_id}/suppliers`, {
+    fetch(apiURL + `/user/${user_id}/suppliers`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ function registerSupplier(user_id, token) {
         mail
     };
 
-    fetch(`http://localhost:5000/user/${user_id}/supplier`, {
+    fetch(apiURL + `/user/${user_id}/supplier`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -195,7 +195,7 @@ function linkProductToSupplier(user_id, token) {
         return; 
     }
 
-    fetch(`http://localhost:5000/user/${user_id}/suppliers/${supplier_id}/products/${product_id}`, {
+    fetch(apiURL + `/user/${user_id}/suppliers/${supplier_id}/products/${product_id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -242,7 +242,7 @@ function getSuppliersByProduct(user_id, token) {
         return;
     }
 
-    fetch(`http://localhost:5000/user/${user_id}/products/${product_id}/supplier`, {
+    fetch(apiURL + `/user/${user_id}/products/${product_id}/supplier`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
