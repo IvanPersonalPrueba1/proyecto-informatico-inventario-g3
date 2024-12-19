@@ -93,7 +93,7 @@ function registerCategory(user_id, token) {
         }
         showMessage('Categoría creada exitosamente', 'success', 'registerCategoryMessage');
         document.getElementById('registerCategoryForm').reset(); // Reiniciar el formulario
-        loadCategories(); // Recargar las categorías para reflejar el cambio
+        loadCategories(user_id,token); // Recargar las categorías para reflejar el cambio
     })
     .catch(error => {
         if (error.message === "Failed to fetch") {
@@ -136,7 +136,7 @@ function updateCategory(user_id, token) {
         }
         showMessage('Categoría actualizada exitosamente', 'success', 'updateCategoryMessage');
         document.getElementById('updateCategoryForm').reset(); // Reiniciar el formulario
-        loadCategories(); // Recargar las categorías para reflejar el cambio
+        loadCategories(user_id, token); // Recargar las categorías para reflejar el cambio
     })
     .catch(error => {
         if (error.message === "Failed to fetch") {

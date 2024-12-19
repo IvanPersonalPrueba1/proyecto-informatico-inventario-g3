@@ -1,6 +1,3 @@
-const username = localStorage.getItem('username');
-document.getElementById("Welcome_username").innerHTML = username;
-
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -8,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
     }
 });
+
+const username = localStorage.getItem('username');
+document.getElementById("Welcome_username").innerHTML = username;
 
 // Accesibilidad y funcionalidad del sidenav
 const openSidebarButton = document.getElementById('openSidebar');

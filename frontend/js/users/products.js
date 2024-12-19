@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('id');
+
     if (!token) {
         window.location.href = "login.html";
     } else {
@@ -9,10 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Event listeners for form submissions
-    document.getElementById('createProductForm').addEventListener('submit', handleFormSubmission(registerProduct(user_id, token)));
-    document.getElementById('updateProductForm').addEventListener('submit', handleFormSubmission(updateProduct(user_id, token)));
-    document.getElementById('deleteProductForm').addEventListener('submit', handleFormSubmission(deleteProduct(user_id, token)));
-    document.getElementById('listProductsByCategoryForm').addEventListener('submit', handleFormSubmission(loadProductsByCategory(user_id, token)));
+    document.getElementById('createProductForm').addEventListener(
+        'submit', 
+        handleFormSubmission(() => registerProduct(user_id, token))
+    );
+    
+    document.getElementById('updateProductForm').addEventListener(
+        'submit', 
+        handleFormSubmission(() => updateProduct(user_id, token))
+    );
+    
+    document.getElementById('deleteProductForm').addEventListener(
+        'submit', 
+        handleFormSubmission(() => deleteProduct(user_id, token))
+    );
+    
+    document.getElementById('listProductsByCategoryForm').addEventListener(
+        'submit', 
+        handleFormSubmission(() => loadProductsByCategory(user_id, token))
+    );
 });
 
 const username = localStorage.getItem('username');
@@ -95,7 +111,7 @@ function registerProduct(user_id, token) {
     .then(responseData => {
         showMessage('Producto registrado exitosamente.', 'success', 'registerProductMessage');
         document.getElementById('createProductForm').reset();
-        loadProducts(); // Llama a la función para actualizar la lista de productos
+        loadProducts(user_id, token); // Llama a la función para actualizar la lista de productos
     })
     .catch(error => {
         showMessage(error.message, 'error', 'registerProductMessage');
@@ -120,7 +136,7 @@ function updateProduct(user_id, token) {
     .then(() => {
         showMessage('Producto actualizado exitosamente.', 'success', 'updateProductMessage');
         document.getElementById('updateProductForm').reset();
-        loadProducts();
+        loadProducts(user_id, token);
     })
     .catch(error => showMessage(error.message, 'error', 'updateProductMessage'));
 }
@@ -142,7 +158,7 @@ function deleteProduct(user_id, token) {
     .then(() => {
         showMessage('Producto eliminado exitosamente.', 'success', 'deleteProductMessage');
         document.getElementById('deleteProductForm').reset();
-        loadProducts();
+        loadProducts(user_id, token);
     })
     .catch(error => showMessage(error.message, 'error', 'deleteProductMessage'));
 }
@@ -162,8 +178,6 @@ function loadProductsByCategory(user_id, token) {
     })
     .then(response => handleResponse(response))
     .then(result => {
-        // Verifica qué contiene `result` aquí
-        console.log(result); // Para depuración
         // Asegúrate de que estás pasando la estructura correcta
         populateCategoryProducts(result); // Cambiado de result.data a result
     })
@@ -241,7 +255,6 @@ function populateCategoryProducts(products) {
 
     // Recorrer cada producto
     products.forEach(product => {
-        console.log(product); // Para depuración
 
         const li = document.createElement('li');
         const price = parseFloat(product.price).toLocaleString(undefined, { style: 'currency', currency: 'USD' });

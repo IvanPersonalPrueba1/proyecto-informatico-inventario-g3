@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
+    const user_id = localStorage.getItem('id');
     if (token) {
-        const user_id = localStorage.getItem('id');
         const username = localStorage.getItem('username');
         loadProducts(user_id, token); // Cargar productos en el dropdown
         loadProductsInStock(user_id, token);
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "login.html";
     }
 
-    checkLowStock();
+    checkLowStock(user_id, token);
 });
 
 function loadProducts(user_id, token) {
@@ -85,10 +85,8 @@ function populateStockProducts(stock) {
     }
 }
 
-function checkLowStock() {
+function checkLowStock(user_id, token) {
     const notificationIcon = document.getElementById('notification-icon');
-    const user_id = localStorage.getItem('id');
-    const token = localStorage.getItem('token');
     const lowStockSection = document.getElementById('lowStockSection');
     const lowStockList = document.getElementById('lowStockList');
 
@@ -106,7 +104,6 @@ function checkLowStock() {
     })
     .then(response => response.json())
     .then(result => {
-        console.log("Datos de stock bajo recibidos:", result); // Añadir este log para depuración
         if (result.error) throw new Error(result.error);
 
         const products = result.data;
@@ -170,7 +167,7 @@ function updateStock() {
     .finally(() => stopSpinner());
     loadProducts(user_id, token); // Cargar productos en el dropdown
     loadProductsInStock(user_id, token);
-    checkLowStock(); // Recargar la lista de productos con bajo stock
+    checkLowStock(user_id, token); // Recargar la lista de productos con bajo stock
 }
 
 function handleFetchError(error) {
