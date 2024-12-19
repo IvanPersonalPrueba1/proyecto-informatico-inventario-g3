@@ -17,7 +17,7 @@ def report_purchases_summary(user_id):
         data = Report.purchases_summary_by_period(user_id, start_date, end_date)
         return jsonify({"data": data}), 200
     except DBError as e:
-        return jsonify({"error": str(e)}), 404
+        return jsonify({"error": str(e)}), 400
 
 @app.route('/user/<int:user_id>/reports/top-suppliers', methods=['GET'])
 @token_required
