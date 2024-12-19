@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/css/styles_general.css">
+    <link rel="stylesheet" href="../css/styles_general.css">
     <title>Gestión de Reportes</title>
 </head>
 <body>
-    <!-- Botón para abrir el sidenav -->
     <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
     
-    <!-- Barra lateral tipo overlay -->
     <div id="sidebar" class="sidebar" aria-hidden="true">
         <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
         <h2>Gestión de Inventario</h2>
@@ -35,29 +33,35 @@
 
         <h1>Reportes de Compras</h1>
 
-        <!-- Formulario para resumen de compras por periodo -->
-        <form id="report-form">
-            <label for="start-date">Fecha de Inicio:</label>
-            <input type="date" id="start-date" required>
-            <label for="end-date">Fecha de Fin:</label>
-            <input type="date" id="end-date" required>
-            <button type="submit">Generar Resumen</button>
-        </form>
+        <div id="modalListaOrdenes" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal('modalListaOrdenes')">&times;</span>
+                <h2>Lista de Órdenes</h2>
+                <ul id="modal-lista-ordenes-lista"></ul> </div>
+        </div>
 
-        <h2>Resumen de Compras</h2>
-        <ul id="purchases-summary"></ul>
-
-        <h2>Principales Proveedores</h2>
-        <ul id="top-suppliers"></ul>
-
-        <h2>Productos Más Comprados</h2>
-        <ul id="top-products"></ul>
-
-        <h2>Gastos Totales por Proveedor</h2>
-        <ul id="total-expenses"></ul>
+        <div id="modalInventario" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal('modalInventario')">&times;</span>
+                <h2>Inventario Actual</h2>
+                <ul id="modal-inventario-lista"></ul>
+            </div>
+        </div>
+        
+        <div id="modalBajoStock" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal('modalBajoStock')">&times;</span>
+                <h2>Productos con Bajo Stock</h2>
+                <ul id="modal-bajo-stock-lista"></ul>
+            </div>
+        </div>
+        
+        <button onclick="openModal('modalInventario')">Ver Inventario Actual</button>
+        <button onclick="openModal('modalBajoStock')">Ver Productos con Bajo Stock</button>
+        <button onclick="openModal('modalListaOrdenes')">Ver Lista de Órdenes</button>
     </div>
 
-    <script src="/frontend/js/common/common.js"></script>
-    <script src="/frontend/js/users/reports.js"></script>
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/reports.js"></script>
 </body>
 </html>

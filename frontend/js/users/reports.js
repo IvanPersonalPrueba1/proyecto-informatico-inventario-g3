@@ -1,183 +1,248 @@
-// Función para cerrar la sesión del usuario
-function userLogout() {
-    localStorage.clear(); // Limpia todos los datos del almacenamiento
-    window.location.href = "login.html"; // Redirige a la página de login
-}
-
-// Obtiene el token y la información del usuario del almacenamiento local
-const token = localStorage.getItem('token');
-const user_id = localStorage.getItem('id');
-const username = localStorage.getItem('username');
-document.getElementById("Welcome_username").innerHTML = username;
-
-// Verifica si el usuario está autenticado al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
-    if (!token) {
-        window.location.href = "login.html"; // Redirige si no hay token
+    const token = localStorage.getItem('token');
+    const user_id = localStorage.getItem('id');
+    const username = localStorage.getItem('username');
+
+    if (token && user_id) {
+        document.getElementById("Welcome_username").textContent = username || '';
+
+        // Event listeners para los botones de los modales
+        const openModalInventarioButton = document.querySelector('[onclick="openModal(\'modalInventario\')"]');
+        if (openModalInventarioButton) {
+            openModalInventarioButton.addEventListener('click', () => {
+                fetchInventory(user_id, token);
+            });
+        }
+
+        const openModalBajoStockButton = document.querySelector('[onclick="openModal(\'modalBajoStock\')"]');
+        if (openModalBajoStockButton) {
+            openModalBajoStockButton.addEventListener('click', () => {
+                fetchLowStock(user_id, token);
+            });
+        }
+
+        const openModalListaOrdenesButton = document.querySelector('[onclick="openModal(\'modalListaOrdenes\')"]');
+        if (openModalListaOrdenesButton) {
+            openModalListaOrdenesButton.addEventListener('click', () => {
+                fetchPurchaseOrders(user_id, token);
+            });
+        }
     } else {
-        document.getElementById("Welcome_username").textContent = username; // Muestra el nombre de usuario
-        // Carga los reportes al cargar la página
-        loadPurchasesSummary();
-        loadTopSuppliers();
-        loadTopProducts();
-        loadTotalExpenses();
+        window.location.href = "login.html";
     }
 });
 
-// Función para cargar el resumen de compras
-function loadPurchasesSummary() {
-    const startDate = document.getElementById('start-date').value;
-    const endDate = document.getElementById('end-date').value;
+function fetchInventory(user_id, token) {
+    fetch(`${apiURL}/user/${user_id}/stock`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al obtener el inventario.');
+        }
+        return response.json();
+    })
+    .then(result => {
+        populateInventoryList(result);
+    })
+    .catch(error => {
+        handleFetchError(error, 'modal-inventario-lista');
+    });
+}
 
-    if (startDate && endDate) {
-        fetch(`${apiURL}/user/${user_id}/reports/summary?start_date=${startDate}&end_date=${endDate}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': token // Solo el token es necesario aquí
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la solicitud de resumen de compras');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const purchasesSummaryList = document.getElementById('purchases-summary');
-            purchasesSummaryList.innerHTML = ''; // Limpia la lista anterior
-            data.data.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.order_date} - Proveedor: ${item.supplier_name} - Total: ${item.total_amount}`;
-                purchasesSummaryList.appendChild(li);
-            });
-        })
-        .catch(error => {
-            console.error(error);
-            alert('Error al cargar el resumen de compras');
+function populateInventoryList(stock) {
+    const inventoryList = document.getElementById('modal-inventario-lista');
+    inventoryList.innerHTML = '';
+
+    if (Array.isArray(stock) && stock.length > 0) {
+        stock.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${item.product_name}, ${item.quantity} unidades`;
+            inventoryList.appendChild(listItem);
         });
+    } else {
+        inventoryList.innerHTML = '<li>No hay productos en el inventario.</li>';
     }
 }
 
-// Función para cargar los principales proveedores
-function loadTopSuppliers() {
-    fetch(`${apiURL}/user/${user_id}/reports/top-suppliers`, {
+// Función para obtener los productos con bajo stock
+function fetchLowStock(user_id, token) {
+    fetch(`${apiURL}/user/${user_id}/stock/low`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token // Incluye el token
+            'x-access-token': token
         }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error en la solicitud de principales proveedores');
+            throw new Error('Error al obtener los productos con bajo stock.');
         }
         return response.json();
     })
-    .then(data => {
-        const topSuppliersList = document.getElementById('top-suppliers');
-        topSuppliersList.innerHTML = ''; // Limpia la lista anterior
-        data.data.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `Proveedor: ${item.supplier_name} - Órdenes: ${item.total_orders}`;
-            topSuppliersList.appendChild(li);
-        });
+    .then(result => {
+        populateLowStockList(result.data);
     })
     .catch(error => {
-        console.error(error);
-        alert('Error al cargar los principales proveedores');
+        handleFetchError(error, 'modal-bajo-stock-lista');
     });
 }
 
-// Función para cargar los productos más comprados
-function loadTopProducts() {
-    fetch(`${apiURL}/user/${user_id}/reports/top-products`, {
+// Función para separar la lógica de llenado de la lista de bajo stock
+function populateLowStockList(products) {
+    const lowStockList = document.getElementById('modal-bajo-stock-lista');
+    lowStockList.innerHTML = '';
+
+    if (Array.isArray(products) && products.length > 0) {
+        products.forEach(product => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `ID: ${product.product_id}, Nombre: ${product.product_name}, Cantidad: ${product.quantity}`;
+            lowStockList.appendChild(listItem);
+        });
+    } else {
+        lowStockList.innerHTML = '<li>No hay productos con bajo stock.</li>';
+    }
+}
+
+// Función para obtener y mostrar la lista de órdenes
+function fetchPurchaseOrders(user_id, token) {
+    // Corregido: Eliminado fetchfetch y se usan user_id y token del contexto
+    fetch(`${apiURL}/user/${user_id}/orders`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token // Incluye el token
+            'x-access-token': token
         }
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error en la solicitud de productos más comprados');
+            throw new Error('Error al obtener las órdenes de compra.');
         }
         return response.json();
     })
-    .then(data => {
-        const topProductsList = document.getElementById('top-products');
-        topProductsList.innerHTML = ''; // Limpia la lista anterior
-        data.data.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `Producto: ${item.product_name} - Cantidad: ${item.total_quantity}`;
-            topProductsList.appendChild(li);
-        });
+    .then(result => {
+        if (!Array.isArray(result.data)) {
+            throw new Error('La respuesta no es un arreglo de órdenes.');
+        }
+        renderPurchaseOrders(result.data);
     })
     .catch(error => {
-        console.error(error);
-        alert('Error al cargar los productos más comprados');
+        handleFetchError(error, 'modal-lista-ordenes-lista');
     });
 }
 
-// Función para cargar los gastos totales por proveedor
-function loadTotalExpenses() {
-    fetch(`${apiURL}/user/${user_id}/reports/total-expenses`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': token // Incluye el token
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en la solicitud de gastos totales por proveedor');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const totalExpensesList = document.getElementById('total-expenses');
-        totalExpensesList.innerHTML = ''; // Limpia la lista anterior
-        data.data.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `Proveedor: ${item.supplier_name} - Total Gastado: ${item.total_spent}`;
-            totalExpensesList.appendChild(li);
+// Función para renderizar las órdenes de compra en el modal
+function renderPurchaseOrders(orders) {
+    const ordersList = document.getElementById('modal-lista-ordenes-lista');
+    ordersList.innerHTML = '';
+
+    if (orders.length > 0) {
+        orders.forEach(order => {
+            const listItem = document.createElement('li');
+
+            // Formatear la fecha de orden
+            const orderDate = new Date(order.order_date);
+            const formattedOrderDate = orderDate.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            // Formatear la fecha de recepción (si existe)
+            let formattedReceivedDate = 'Pendiente';
+            if (order.received_date) {
+                const receivedDate = new Date(order.received_date);
+                formattedReceivedDate = receivedDate.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+            }
+
+            listItem.innerHTML = `
+                ID: ${order.id}<br>
+                Fecha de Orden: ${formattedOrderDate}<br>
+                Fecha de Recepción: ${formattedReceivedDate}<br>
+                Estado: ${order.status}
+            `;
+            ordersList.appendChild(listItem);
         });
-    })
-    .catch(error => {
-        console.error(error);
-        alert('Error al cargar los gastos totales por proveedor');
-    });
+    } else {
+        const listItem = document.createElement('li');
+        listItem.textContent = 'No hay órdenes de compra registradas.';
+        ordersList.appendChild(listItem);
+    }
 }
 
-// Accesibilidad y funcionalidad del sidenav
+// Función para manejar errores de fetch
+function handleFetchError(error, modalListId) {
+    console.error('Error:', error);
+    const listElement = document.getElementById(modalListId);
+    if (listElement) {
+        listElement.innerHTML = '';
+        const errorItem = document.createElement('li');
+        errorItem.textContent = `Error: ${error.message}`;
+        listElement.appendChild(errorItem);
+    }
+}
+
+// Funciones de accesibilidad y manejo del sidenav (estas deberían estar en common.js)
 const openSidebarButton = document.getElementById('openSidebar');
 const closeSidebarButton = document.getElementById('closeSidebar');
 const sidebar = document.getElementById('sidebar');
 
-// Al abrir el sidenav
-openSidebarButton.addEventListener('click', () => {
-    sidebar.setAttribute('aria-hidden', 'false');
-    sidebar.classList.add('visible');
-});
+if (openSidebarButton && closeSidebarButton && sidebar) {
+    openSidebarButton.addEventListener('click', () => {
+        sidebar.setAttribute('aria-hidden', 'false');
+        sidebar.classList.add('visible');
+    });
 
-// Al cerrar el sidenav
-closeSidebarButton.addEventListener('click', () => {
-    sidebar.setAttribute('aria-hidden', 'true');
-    sidebar.classList.remove('visible');
-});
-
-// Cierra el sidenav al hacer clic en un enlace
-const navLinks = sidebar.querySelectorAll('nav ul li a');
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
+    closeSidebarButton.addEventListener('click', () => {
         sidebar.setAttribute('aria-hidden', 'true');
         sidebar.classList.remove('visible');
     });
-});
 
-// Manejo del formulario de generación de resumen de compras
-const reportForm = document.getElementById('report-form');
-reportForm.addEventListener('submit', (event) => {
-    event.preventDefault(); // Previene el envío del formulario
-    loadPurchasesSummary(); // Llama a la función para cargar el resumen
-});
+    const navLinks = sidebar.querySelectorAll('nav ul li a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            sidebar.setAttribute('aria-hidden', 'true');
+            sidebar.classList.remove('visible');
+        });
+    });
+}
+
+// Funciones para abrir y cerrar modales (estas deberían estar en common.js)
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "block";
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = "none";
+    }
+}
+
+// Función de cierre de sesión (userLogout) - debe estar en common.js
+function userLogout() {
+    // Eliminar token y user_id del localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('username');
+
+    // Redirigir al usuario a la página de login
+    window.location.href = 'login.html';
+}

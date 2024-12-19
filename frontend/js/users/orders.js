@@ -232,7 +232,7 @@ function fetchPurchaseOrders() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token // Asegúrate de pasar el token del usuario para la autenticación
+            'x-access-token': token 
         }
     })
     .then(response => {
@@ -241,8 +241,7 @@ function fetchPurchaseOrders() {
         }
         return response.json();
     })
-    .then(result => { // Cambiamos de 'orders' a 'result' para reflejar el objeto completo
-        // Verifica si la propiedad 'data' es un arreglo
+    .then(result => { 
         if (!Array.isArray(result.data)) {
             throw new Error('La respuesta no es un arreglo de órdenes.');
         }
@@ -259,11 +258,30 @@ function showOrderDetails(order) {
     const modalContent = document.getElementById('modal-order-details');
     modalContent.innerHTML = ''; // Limpiar contenido anterior
 
+    // Formatear la fecha de orden
+    const orderDate = new Date(order.order_date);
+    const formattedOrderDate = orderDate.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+
+    // Formatear la fecha de recepción (si existe)
+    let formattedReceivedDate = 'Pendiente';
+    if (order.received_date) {
+        const receivedDate = new Date(order.received_date);
+        formattedReceivedDate = receivedDate.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
     const orderInfo = `
         <div>
             <strong>ID:</strong> ${order.id}<br>
-            <strong>Fecha de Orden:</strong> ${order.order_date}<br>
-            <strong>Fecha de Recepción:</strong> ${order.received_date || 'Pendiente'}<br>
+            <strong>Fecha de Orden:</strong> ${formattedOrderDate}<br>
+            <strong>Fecha de Recepción:</strong> ${formattedReceivedDate}<br>
             <strong>Estado:</strong> ${order.status}<br>
             <strong>Productos:</strong>
             <ul>

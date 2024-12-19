@@ -114,9 +114,9 @@ class Order:
         return {"message": "Orden creada exitosamente"}, 200
 
     @classmethod
-    def update_order(cls, user_id, order_id, received_date=None):  # Agregamos received_date como parámetro opcional para testear en thunder
+    def update_order(cls, user_id, order_id):  
         new_status = 'completed'
-        received_date = received_date or datetime.date.today()  # Asignar fecha actual si no se proporciona
+        received_date = received_date or datetime.date.today() 
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
