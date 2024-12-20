@@ -111,7 +111,6 @@ function populateLowStockList(products) {
 
 // Función para obtener y mostrar la lista de órdenes
 function fetchPurchaseOrders(user_id, token) {
-    // Corregido: Eliminado fetchfetch y se usan user_id y token del contexto
     fetch(`${apiURL}/user/${user_id}/orders`, {
         method: 'GET',
         headers: {
@@ -191,7 +190,6 @@ function handleFetchError(error, modalListId) {
     }
 }
 
-// Funciones de accesibilidad y manejo del sidenav (estas deberían estar en common.js)
 const openSidebarButton = document.getElementById('openSidebar');
 const closeSidebarButton = document.getElementById('closeSidebar');
 const sidebar = document.getElementById('sidebar');
@@ -216,7 +214,6 @@ if (openSidebarButton && closeSidebarButton && sidebar) {
     });
 }
 
-// Funciones para abrir y cerrar modales (estas deberían estar en common.js)
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -237,13 +234,7 @@ window.onclick = function(event) {
     }
 }
 
-// Función de cierre de sesión (userLogout) - debe estar en common.js
 function userLogout() {
-    // Eliminar token y user_id del localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('username');
-
-    // Redirigir al usuario a la página de login
+    localStorage.clear()
     window.location.href = 'login.html';
 }

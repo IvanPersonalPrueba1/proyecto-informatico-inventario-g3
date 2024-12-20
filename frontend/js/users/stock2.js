@@ -134,8 +134,8 @@ function checkLowStock(user_id, token) {
 
 function updateStock() {
     const productSelect = document.getElementById('productId');
-    const product_id = productSelect.value; // Obtener el ID del producto seleccionado
-    const product_name = productSelect.options[productSelect.selectedIndex].text; // Obtener el nombre del producto seleccionado    
+    const product_id = productSelect.value; 
+    const product_name = productSelect.options[productSelect.selectedIndex].text;    
     const newQuantity = document.getElementById('newQuantity').value;
     const user_id = localStorage.getItem('id');
     const token = localStorage.getItem('token');

@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('order-form').addEventListener('submit', handleFormSubmission(registerPurchaseOrder));
 });
 
+// Variables globales para almacenar el token, ID de usuario y nombre de usuario
+const token = localStorage.getItem('token');
+const user_id = localStorage.getItem('id');
+const username = localStorage.getItem('username');
+
 // Función para envolver la función de manejo de eventos del formulario y prevenir el comportamiento por defecto
 function handleFormSubmission(callback) {
     return function (event) {
@@ -52,10 +57,6 @@ navLinks.forEach(link => {
     });
 });
 
-/**
- * Función para llenar las listas de productos en el formulario.
- * @param {Array} products - Lista de productos a mostrar.
- */
 function populateProductLists(products) {
     const productSelect = document.getElementById('productSelect');
     productSelect.innerHTML = '<option value="">Seleccione un producto</option>';
@@ -84,10 +85,6 @@ function populateProductLists(products) {
     });
 }
 
-/**
- * Función para cargar productos desde la API.
- * @param {number|null} supplierId - ID del proveedor para filtrar productos (opcional).
- */
 function loadProducts(supplierId = null) {
     const productSelect = document.getElementById('productSelect');
     productSelect.innerHTML = '<option value="">Cargando...</option>';
@@ -154,7 +151,6 @@ function loadSuppliers() {
 
 /**
  * Función para cargar proveedores asociados a un producto específico desde la API.
- * @param {number} productId - ID del producto para el cual se cargarán los proveedores.
  */
 function loadSuppliersByProduct(productId) {
     const supplierSelect = document.getElementById('supplier-id');
@@ -200,9 +196,6 @@ function loadSuppliersByProduct(productId) {
 
 /**
  * Función para mostrar un mensaje al usuario.
- * @param {string} text - Texto del mensaje.
- * @param {string} type - Tipo de mensaje ('success' o 'error').
- * @param {string} elementId - ID del elemento HTML donde se mostrará el mensaje.
  */
 function showMessage(text, type, elementId) {
     const messageElement = document.getElementById(elementId);
@@ -213,7 +206,6 @@ function showMessage(text, type, elementId) {
 
 /**
  * Función para recopilar los datos del producto seleccionado en el formulario.
- * @returns {{products: Array<{product_id: number, quantity: number}>}|null} - Objeto con los datos del producto o null si hay campos incompletos.
  */
 function collectProductData() {
     const supplier = document.getElementById('supplier-id').value;
@@ -297,7 +289,6 @@ function fetchPurchaseOrders() {
 
 /**
  * Función para mostrar una ventana modal con los detalles de una orden específica.
- * @param {Object} order - Objeto que representa la orden de compra.
  */
 function showOrderDetails(order) {
     const modal = document.getElementById('orderModal');
@@ -351,7 +342,6 @@ document.getElementById('closeModal').addEventListener('click', () => {
 
 /**
  * Función para renderizar las órdenes de compra en la interfaz de usuario.
- * @param {Array} orders - Lista de órdenes de compra a renderizar.
  */
 function renderPurchaseOrders(orders) {
     const orderListContainer = document.getElementById('order-list');
@@ -422,7 +412,6 @@ function renderPurchaseOrders(orders) {
 
 /**
  * Función para eliminar una orden de compra por su ID.
- * @param {number} orderId - ID de la orden a eliminar.
  */
 function deleteOrder(orderId) {
     clearMessage('OrderRegisterMessage'); // Limpia cualquier mensaje previo
@@ -457,7 +446,6 @@ function deleteOrder(orderId) {
 /**
  * Función para confirmar una orden de compra por su ID.
  * Actualiza la fecha de recepción de la orden a la fecha actual.
- * @param {number} orderId - ID de la orden a confirmar.
  */
 function confirmOrder(orderId) {
     clearMessage('OrderRegisterMessage'); // Limpia cualquier mensaje previo
@@ -504,7 +492,6 @@ function confirmOrder(orderId) {
 
 /**
  * Función para limpiar el contenido de un elemento de mensaje en la interfaz.
- * @param {string} elementId - ID del elemento HTML que contiene el mensaje.
  */
 function clearMessage(elementId) {
     const messageElement = document.getElementById(elementId);

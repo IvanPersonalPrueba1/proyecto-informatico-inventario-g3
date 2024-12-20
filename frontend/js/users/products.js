@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
         loadProducts(user_id, token);
     }
 
-    // Event listeners for form submissions
     document.getElementById('createProductForm').addEventListener(
         'submit', 
         handleFormSubmission(() => registerProduct(user_id, token))
@@ -34,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const username = localStorage.getItem('username');
 document.getElementById("Welcome_username").innerHTML = username;
 
-let categories = []; // Almacenará las categorías
+let categories = [];
 
 
 // Funciones principales
@@ -69,7 +68,7 @@ function populateCategorySelect(categories, selectId) {
 
     categories.forEach(category => {
         const option = document.createElement('option');
-        option.value = category.id; // Asegúrate de usar el ID correcto
+        option.value = category.id;
         option.textContent = category.name;
         selectElement.appendChild(option);
     });
@@ -100,7 +99,7 @@ function registerProduct(user_id, token) {
             'Content-Type': 'application/json',
             'x-access-token': token
         },
-        body: JSON.stringify(data)  // Asegúrate de que esto es un JSON válido
+        body: JSON.stringify(data)
     })
     .then(response => {
         if (!response.ok) {
@@ -178,14 +177,12 @@ function loadProductsByCategory(user_id, token) {
     })
     .then(response => handleResponse(response))
     .then(result => {
-        // Asegúrate de que estás pasando la estructura correcta
-        populateCategoryProducts(result); // Cambiado de result.data a result
+        populateCategoryProducts(result);
     })
     .catch(error => showMessage(error.message, 'error', 'listProductsByCategoryMessage'));
 }
 
 
-// Helper functions
 function handleResponse(response) {
     if (!response.ok) {
         return response.json().then(result => {
@@ -200,7 +197,6 @@ function collectProductData(action, productId) {
     const price = parseFloat(document.getElementById(`${action === 'create' ? 'create' : 'updated'}ProductPrice`).value);
     const category_id = document.getElementById(`${action === 'create' ? 'New' : 'Update'}ProductCategorySelect`).value;
 
-    // Asegúrate de que category_id sea null si no se selecciona
     const categoryIdValue = category_id ? parseInt(category_id) : null;
 
     // Validación de campos requeridos

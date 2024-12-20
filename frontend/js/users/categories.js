@@ -48,7 +48,7 @@ function loadCategories(user_id, token) {
         result.data.forEach(category => {
             // Crear un elemento de lista
             const li = document.createElement('li');
-            li.textContent = `${category.name}: ${category.descripcion}`; // Asumiendo que también tienes una descripción
+            li.textContent = `${category.name}: ${category.descripcion}`;
             categoryList.appendChild(li);
 
             // Crear una opción para el select

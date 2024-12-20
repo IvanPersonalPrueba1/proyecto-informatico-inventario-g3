@@ -88,14 +88,14 @@ button:hover {
 .sidebar ul li {
   margin: 10px 0;
   padding: 10px;
-  background-color: #4a2e50;
+  background-color: #520486;
   border: 1px solid #7b4ba3;
   border-radius: 5px;
   color: #333;
 }
 
 .sidebar a:hover {
-  background-color: #5a3a7d;
+  background-color: #6700d4;
 }
 
 .sidebar .close-btn {
@@ -238,6 +238,11 @@ ul li {
 @media screen and (max-width: 768px) {
   .sidebar {
       padding-top: 40px;
+  }
+  .sidebar.visible {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 768px; /* Ajusta esto al ancho deseado */
   }
 
   form input, form select {

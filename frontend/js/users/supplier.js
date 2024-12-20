@@ -2,21 +2,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cargar el token de localStorage y verificar autenticación
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('id');
-    const username = localStorage.getItem('username');
 
-    if (!token) {
-        // Redirigir al login si no hay token
-        window.location.href = "login.html";
-    } else {
-        document.getElementById("username").innerHTML = username;           
-        loadProducts(user_id, token); // Cargar productos en stock en el desplegable        
-        loadSuppliers(user_id, token); // Cargar proveedores en el desplegable
+    if (token) {
+        // Cargar productos en stock en el desplegable
+        loadProducts(user_id, token);
+
+        // Cargar proveedores en el desplegable
+        loadSuppliers(user_id, token);
+
         loadProductsSelect(user_id, token);
 
         // Configurar el evento de clic para el botón de registrar proveedor
         const registerSupplierBtn = document.getElementById('registerSupplierBtn');
         if (registerSupplierBtn) {
-            registerSupplierBtn.addEventListener('click', () => registerSupplier(user_id, token));
+            registerSupplierBtn.addEventListener('click', () => registerSupplier(user_id, token)); 
         } else {
             console.error("Elemento con ID 'registerSupplierBtn' no encontrado");
         }
@@ -32,10 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // Configurar el evento de clic para el botón de consultar proveedores
         const getSuppliersBtn = document.getElementById('getSuppliersBtn');
         if (getSuppliersBtn) {
-            getSuppliersBtn.addEventListener('click', () => getSuppliersByProduct(user_id, token));
+            getSuppliersBtn.addEventListener('click', () => getSuppliersByProduct(user_id, token)); 
         } else {
             console.error("Elemento con ID 'getSuppliersBtn' no encontrado");
         }
+    } else {
+        // Redirigir al login si no hay token
+        window.location.href = "login.html";
     }
 });
 
@@ -49,7 +51,7 @@ function showMessage(text, type) {
     if (messageElement) {
         messageElement.classList.remove('error', 'success', 'info');
         messageElement.innerHTML = text;
-        messageElement.classList.add(type); // 'info' | 'success' | 'error'
+        messageElement.classList.add(type);
     }
 }
 
@@ -78,7 +80,7 @@ function loadProducts(user_id, token) {
             data.forEach(product => {
                 const option = document.createElement('option');
                 option.value = product.product_id;
-                option.textContent = `${product.product_name} (ID: ${product.product_id})`; // Mostrar ambos valores
+                option.textContent = `${product.product_name} (ID: ${product.product_id})`; // Muestra ambos valores
                 productDropdown.appendChild(option);
             });
         } else {
@@ -160,7 +162,7 @@ function registerSupplier(user_id, token) {
         if (!response.ok) {
             // Si la respuesta no es OK, analizar el cuerpo de la respuesta para obtener el error
             return response.json().then(data => { 
-                throw new Error(data.message); // Lanzar un error con el mensaje del backend
+                throw new Error(data.message); // Lanza un error con el mensaje del backend
             });
         }
         return response.json();
@@ -185,7 +187,7 @@ function registerSupplier(user_id, token) {
 function linkProductToSupplier(user_id, token) {
     const supplier_id = document.getElementById('supplier_id').value;
     const product_id = document.getElementById('product_id').value;
-    const messageElement = document.getElementById('linkSupplierMessage'); // Cambiado para mostrar el mensaje aquí
+    const messageElement = document.getElementById('linkSupplierMessage'); 
 
     if (!supplier_id || !product_id) {
         messageElement.textContent = 'Por favor, seleccione un proveedor y un producto.';
@@ -204,7 +206,7 @@ function linkProductToSupplier(user_id, token) {
         if (!response.ok) {
             // Si la respuesta no es OK, analizar el cuerpo de la respuesta para obtener el error
             return response.json().then(data => { 
-                throw new Error(data.message); // Lanzar un error con el mensaje del backend
+                throw new Error(data.message); // Lanza un error con el mensaje del backend
             });
         }
         return response.json();
