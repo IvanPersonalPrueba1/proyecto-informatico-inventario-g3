@@ -103,10 +103,8 @@ class Product():
                     connection.commit()
 
                 except DBError as e:
-                    # Levantar el error con el mensaje específico
                     raise DBError(f"Error al crear el producto: {str(e)}")
                 except Exception as e:
-                    # Captura de cualquier otro error inesperado
                     raise DBError(f"Error interno del servidor: {str(e)}")
 
         return {"message": "Producto creado exitosamente"}, 201
@@ -205,4 +203,4 @@ class Product():
                 "price": row[2],
                 "category_id": row[3]
             } for row in data
-        ] if data else []  # Retorna una lista vacía si no se encuentran productos
+        ] if data else [] 

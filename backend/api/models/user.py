@@ -107,7 +107,7 @@ class User():
 
 
         # Obtener la hora actual en UTC y convertirla a un timestamp
-        exp_timestamp = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=6)).timestamp()
+        exp_timestamp = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=12)).timestamp()
         
         # Generar token JWT
         token = jwt.encode({

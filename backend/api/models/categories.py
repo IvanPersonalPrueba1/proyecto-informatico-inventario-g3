@@ -74,7 +74,7 @@ class Category():
             except Exception as e:
                 raise DBError(f"Error al crear la categoría: {str(e)}")
 
-        return {"message": "Categoría creada exitosamente"}, 201
+        return {"message": "Categoría creada exitosamente"}, 200
 
     @classmethod
     def update_category(cls, user_id, category_id, data):
