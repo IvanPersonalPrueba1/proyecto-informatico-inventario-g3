@@ -74,7 +74,11 @@
 
     <!-- Contenido Principal -->
     <div class="main-content">
-        <h1>Gestión de Órdenes de Compra</h1>
+        <header class="header">
+            <h1>Gestión de Órdenes de Compra</h1>
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
         
         <!-- Mensajes de respuesta -->
         <div id="OrderRegisterMessage" class="message"></div>
