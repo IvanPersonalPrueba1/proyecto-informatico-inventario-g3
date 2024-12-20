@@ -1,45 +1,50 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Verificar si el usuario está autenticado al cargar la página
     const token = localStorage.getItem('token');
     if (!token) {
+         // Redirigir al usuario a la página de login si no hay token
         window.location.href = "login.html";
     } else {
+        // Cargar productos, proveedores y órdenes de compra si el usuario está autenticado
         loadProducts();
         loadSuppliers();
         fetchPurchaseOrders();
     }
+    // Asociar el evento de submit del formulario a la función registerPurchaseOrder
     document.getElementById('order-form').addEventListener('submit', handleFormSubmission(registerPurchaseOrder));
 });
 
+// Función para envolver la función de manejo de eventos del formulario y prevenir el comportamiento por defecto
 function handleFormSubmission(callback) {
     return function (event) {
-        event.preventDefault();
-        callback();
+        event.preventDefault(); // Prevenir la recarga de la página al enviar el formulario
+        callback(); // Llamar a la función pasada como argumento (ej. registerPurchaseOrder)
     };
 }
 
-// Variables globales
+// Variables globales para almacenar el token, ID de usuario y nombre de usuario
 const token = localStorage.getItem('token');
 const user_id = localStorage.getItem('id');
 const username = localStorage.getItem('username');
 
-// Accesibilidad y funcionalidad del sidenav
+// Elementos del DOM para la navegación lateral (sidebar)
 const openSidebarButton = document.getElementById('openSidebar');
 const closeSidebarButton = document.getElementById('closeSidebar');
 const sidebar = document.getElementById('sidebar');
 
-// Al abrir el sidenav
+// Evento para abrir la barra lateral
 openSidebarButton.addEventListener('click', () => {
     sidebar.setAttribute('aria-hidden', 'false');
     sidebar.classList.add('visible');
 });
 
-// Al cerrar el sidenav
+// Evento para cerrar la barra lateral
 closeSidebarButton.addEventListener('click', () => {
     sidebar.setAttribute('aria-hidden', 'true');
     sidebar.classList.remove('visible');
 });
 
-// Cierra el sidenav al hacer clic en un enlace
+// Evento para cerrar la barra lateral al hacer clic en un enlace
 const navLinks = sidebar.querySelectorAll('nav ul li a');
 navLinks.forEach(link => {
     link.addEventListener('click', () => {
@@ -48,16 +53,19 @@ navLinks.forEach(link => {
     });
 });
 
-// Llenar la lista de productos
+/**
+ * Función para llenar las listas de productos en el formulario.
+ * @param {Array} products - Lista de productos a mostrar.
+ */
 function populateProductLists(products) {
     const productSelect = document.getElementById('productSelect');
     productSelect.innerHTML = '<option value="">Seleccione un producto</option>';
-
+    // Si no hay productos, mostrar un mensaje indicativo
     if (!products.length) {
         productSelect.innerHTML = '<option>No hay productos disponibles</option>';
         return;
     }
-
+    // Llenar la lista de productos con las opciones correspondientes
     products.forEach(product => {
         const option = document.createElement('option');
         option.value = product.id;
@@ -71,21 +79,27 @@ function populateProductLists(products) {
         if (selectedProductId) {
             loadSuppliersByProduct(selectedProductId); // Nueva función para cargar proveedores por producto
         } else {
+            // Si no se selecciona un producto, mostrar mensaje
             document.getElementById('supplier-id').innerHTML = '<option value="">Seleccione un producto primero</option>';
         }
     });
 }
 
-// Cargar productos asociados a un proveedor específico
+/**
+ * Función para cargar productos desde la API.
+ * @param {number|null} supplierId - ID del proveedor para filtrar productos (opcional).
+ */
 function loadProducts(supplierId = null) {
     const productSelect = document.getElementById('productSelect');
     productSelect.innerHTML = '<option value="">Cargando...</option>';
 
+    // Construir la URL de la API para obtener productos, con filtro opcional por proveedor
     let url = apiURL + `/user/${user_id}/products`;
     if (supplierId) {
         url += `?supplier_id=${supplierId}`; // Filtrar por proveedor si existe el parámetro
     }
 
+    // Realizar la solicitud a la API para obtener productos
     fetch(url, {
         method: 'GET',
         headers: {
@@ -93,20 +107,23 @@ function loadProducts(supplierId = null) {
             'x-access-token': token
         }
     })
-    .then(response => handleResponse(response))
+    .then(response => handleResponse(response)) // Manejar la respuesta de la API
     .then(result => {
-        populateProductLists(result.data);
+        populateProductLists(result.data);// Llenar la lista de productos con la respuesta
     })
     .catch(error => {
         console.error('Error al cargar productos:', error);
-        productSelect.innerHTML = '<option>Error al cargar productos</option>';
+        productSelect.innerHTML = '<option>Error al cargar productos</option>'; // Mensaje de error
     });
 }
 
-// Cargar proveedores
+/**
+ * Función para cargar proveedores desde la API y mostrarlos en el dropdown.
+ */
 function loadSuppliers() {
     const supplierDropdown = document.getElementById('supplier-id');
 
+    // Realizar la solicitud a la API para obtener proveedores
     fetch(apiURL + `/user/${user_id}/suppliers`, {
         method: 'GET',
         headers: {
@@ -114,10 +131,11 @@ function loadSuppliers() {
             'x-access-token': token
         }
     })
-    .then(response => response.json())
+    .then(response => response.json()) // Convertir la respuesta a JSON
     .then(data => {
-        supplierDropdown.innerHTML = '<option value="">-- Seleccione un proveedor --</option>';
+        supplierDropdown.innerHTML = '<option value="">-- Seleccione un proveedor --</option>'; // Opción por defecto
 
+        // Si hay proveedores, llenar el dropdown con las opciones correspondientes
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(supplier => {
                 const option = document.createElement('option');
@@ -126,23 +144,24 @@ function loadSuppliers() {
                 supplierDropdown.appendChild(option);
             });
         } else {
-            supplierDropdown.innerHTML = '<option>No hay proveedores disponibles</option>';
+            supplierDropdown.innerHTML = '<option>No hay proveedores disponibles</option>'; // Mensaje si no hay proveedores
         }
     })
     .catch(error => {
         console.error('Error cargando proveedores:', error);
-        supplierDropdown.innerHTML = '<option>Error cargando proveedores</option>';
+        supplierDropdown.innerHTML = '<option>Error cargando proveedores</option>'; // Mensaje de error
     });
-
-    // Eliminamos este evento change:
-    // supplierDropdown.addEventListener('change', () => { ... });
 }
 
-// Función para cargar proveedores por producto seleccionado
+/**
+ * Función para cargar proveedores asociados a un producto específico desde la API.
+ * @param {number} productId - ID del producto para el cual se cargarán los proveedores.
+ */
 function loadSuppliersByProduct(productId) {
     const supplierSelect = document.getElementById('supplier-id');
-    supplierSelect.innerHTML = '<option value="">Cargando...</option>';
+    supplierSelect.innerHTML = '<option value="">Cargando...</option>'; // Mensaje de carga
 
+    // Realizar la solicitud a la API para obtener proveedores de un producto específico
     fetch(apiURL + `/user/${user_id}/products/${productId}/supplier`, {
         method: 'GET',
         headers: {
@@ -151,6 +170,7 @@ function loadSuppliersByProduct(productId) {
         }
     })
     .then(response => {
+        // Manejar errores de respuesta no exitosa
         if (!response.ok) {
             return response.json().then(err => {
                 throw new Error(err.message || "Error desconocido del servidor.");
@@ -159,8 +179,9 @@ function loadSuppliersByProduct(productId) {
         return response.json();
     })
     .then(suppliers => {
-        supplierSelect.innerHTML = '<option value="">Seleccione un proveedor</option>'; // Limpiar opciones
+        supplierSelect.innerHTML = '<option value="">Seleccione un proveedor</option>'; // Limpiar opciones existentes
 
+        // Llenar el dropdown de proveedores con los proveedores asociados al producto
         if (Array.isArray(suppliers) && suppliers.length > 0) {
             suppliers.forEach(supplier => {
                 const option = document.createElement('option');
@@ -169,21 +190,32 @@ function loadSuppliersByProduct(productId) {
                 supplierSelect.appendChild(option);
             });
         } else {
-            supplierSelect.innerHTML = '<option value="">No hay proveedores para este producto</option>';
+            supplierSelect.innerHTML = '<option value="">No hay proveedores para este producto</option>'; // Mensaje si no hay proveedores
         }
     })
     .catch(error => {
         console.error('Error al cargar proveedores:', error);
-        supplierSelect.innerHTML = '<option value="">Error al cargar proveedores</option>';
+        supplierSelect.innerHTML = '<option value="">Error al cargar proveedores</option>'; // Mensaje de error
     });
 }
 
+/**
+ * Función para mostrar un mensaje al usuario.
+ * @param {string} text - Texto del mensaje.
+ * @param {string} type - Tipo de mensaje ('success' o 'error').
+ * @param {string} elementId - ID del elemento HTML donde se mostrará el mensaje.
+ */
 function showMessage(text, type, elementId) {
     const messageElement = document.getElementById(elementId);
     messageElement.textContent = text;
-    messageElement.style.color = type === 'success' ? 'green' : 'red';
+    messageElement.style.color = type === 'success' ? 'green' : 'red'; // Color verde para éxito, rojo para error
 }
 
+
+/**
+ * Función para recopilar los datos del producto seleccionado en el formulario.
+ * @returns {{products: Array<{product_id: number, quantity: number}>}|null} - Objeto con los datos del producto o null si hay campos incompletos.
+ */
 function collectProductData() {
     const supplier = document.getElementById('supplier-id').value;
     const product_id = document.getElementById('productSelect').value;
@@ -194,13 +226,17 @@ function collectProductData() {
         showMessage('Por favor, complete todos los campos.', 'error', `OrderRegisterMessage`);
         return null;
     }
-    const products = [{ product_id, quantity }]; // Array de objetos con los datos del producto
+    // Crear un array de objetos con los datos del producto
+    const products = [{ product_id, quantity }];
     return { products };
 }
 
+/**
+ * Función para registrar una nueva orden de compra.
+ */
 function registerPurchaseOrder() {
     const data = collectProductData();
-    if (!data) return; // Si hay datos inválidos, sale
+    if (!data) return; // Si hay datos inválidos, retorna
 
     fetch(apiURL + `/user/${user_id}/orders`, {
         method: 'POST',
@@ -208,26 +244,33 @@ function registerPurchaseOrder() {
             'Content-Type': 'application/json',
             'x-access-token': token
         },
-        body: JSON.stringify(data)  // Asegúrate de que esto es un JSON válido
+        body: JSON.stringify(data)  
     })
     .then(response => {
         if (!response.ok) {
+            // Intenta obtener un mensaje de error más específico del servidor
             throw new Error('Error al registrar la orden');
         }
         return response.json();
     })
     .then(responseData => {
+        // Mostrar mensaje de éxito y limpiar el formulario
         showMessage('orden registrada exitosamente.', 'success', 'OrderRegisterMessage');
         document.getElementById('order-form').reset();
-        loadProducts(); // Llama a la función para actualizar la lista de productos
-        fetchPurchaseOrders();
+        loadProducts(); // Recargar la lista de productos
+        fetchPurchaseOrders();// Recargar la lista de órdenes de compra
     })
     .catch(error => {
+        // Mostrar mensaje de error
         showMessage(error.message, 'error', 'OrderRegisterMessage');
     });
 }
 
+/**
+ * Función para obtener y mostrar las órdenes de compra del usuario.
+ */
 function fetchPurchaseOrders() {
+    // Realizar la solicitud a la API para obtener las órdenes de compra
     fetch(apiURL + `/user/${user_id}/orders`, {
         method: 'GET',
         headers: {
@@ -241,7 +284,8 @@ function fetchPurchaseOrders() {
         }
         return response.json();
     })
-    .then(result => { 
+    .then(result => {
+        // Si la respuesta no es un array, lanzar un error 
         if (!Array.isArray(result.data)) {
             throw new Error('La respuesta no es un arreglo de órdenes.');
         }
@@ -252,13 +296,16 @@ function fetchPurchaseOrders() {
     });
 }
 
-// Función para mostrar la ventana modal con los detalles de la orden
+/**
+ * Función para mostrar una ventana modal con los detalles de una orden específica.
+ * @param {Object} order - Objeto que representa la orden de compra.
+ */
 function showOrderDetails(order) {
     const modal = document.getElementById('orderModal');
     const modalContent = document.getElementById('modal-order-details');
     modalContent.innerHTML = ''; // Limpiar contenido anterior
 
-    // Formatear la fecha de orden
+    // Formatear la fecha de la orden para mostrarla en formato DD/MM/YYYY
     const orderDate = new Date(order.order_date);
     const formattedOrderDate = orderDate.toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -266,8 +313,8 @@ function showOrderDetails(order) {
         year: 'numeric'
     });
 
-    // Formatear la fecha de recepción (si existe)
-    let formattedReceivedDate = 'Pendiente';
+    // Formatear la fecha de recepción (si existe), o mostrar 'Sin Confirmar'
+    let formattedReceivedDate = 'Sin Confirmar';
     if (order.received_date) {
         const receivedDate = new Date(order.received_date);
         formattedReceivedDate = receivedDate.toLocaleDateString('es-ES', {
@@ -277,6 +324,7 @@ function showOrderDetails(order) {
         });
     }
 
+    // Construir el contenido HTML con los detalles de la orden
     const orderInfo = `
         <div>
             <strong>ID:</strong> ${order.id}<br>
@@ -296,20 +344,27 @@ function showOrderDetails(order) {
     modal.style.display = 'block'; // Mostrar la ventana modal
 }
 
-// Función para cerrar la ventana modal
+// Evento para cerrar la ventana modal al hacer clic en el botón de cerrar
 document.getElementById('closeModal').addEventListener('click', () => {
     document.getElementById('orderModal').style.display = 'none';
 });
 
+
+/**
+ * Función para renderizar las órdenes de compra en la interfaz de usuario.
+ * @param {Array} orders - Lista de órdenes de compra a renderizar.
+ */
 function renderPurchaseOrders(orders) {
     const orderListContainer = document.getElementById('order-list');
-    orderListContainer.innerHTML = '';
+    orderListContainer.innerHTML = ''; // Limpiar la lista de órdenes
 
+    // Si no hay órdenes, mostrar un mensaje indicativo
     if (orders.length === 0) {
         orderListContainer.innerHTML = '<p>No hay órdenes de compra registradas.</p>';
         return;
     }
 
+    // Iterar sobre cada orden para crear su representación en la interfaz
     orders.forEach(order => {
         const orderElement = document.createElement('div');
         orderElement.className = 'order';
@@ -319,6 +374,7 @@ function renderPurchaseOrders(orders) {
         const confirmButtonDisabledAttribute = isPending ? '' : 'disabled';
         const deleteButtonDisabledAttribute = isPending ? '' : 'disabled'; // Aplicar la misma lógica al botón Eliminar
 
+        // Construir el HTML para cada orden con la información y los botones de acción
         const orderInfo = `
             <strong>ID:</strong> ${order.id}
             <strong>Estado:</strong> ${order.status}
@@ -341,12 +397,7 @@ function renderPurchaseOrders(orders) {
             // Verificar si el estado es "pending" antes de proceder
             if (order.status === 'pending') {
                 if (confirm('¿Estás seguro de que deseas eliminar esta orden?')) {
-                    deleteOrder(order.id).then(() => {
-                        fetchPurchaseOrders(); // Actualiza la lista después de eliminar
-                    }).catch(error => {
-                        console.error('Error al eliminar la orden:', error);
-                        alert('No se pudo eliminar la orden. Intenta de nuevo.');
-                    });
+                    deleteOrder(order.id); // Llama a la función directamente
                 }
             } else {
                 alert('Solo las órdenes pendientes pueden ser eliminadas.');
@@ -359,27 +410,23 @@ function renderPurchaseOrders(orders) {
             // Verificar si el estado es "pending" antes de proceder
             if (order.status === 'pending') {
                 if (confirm('¿Estás seguro de que deseas confirmar esta orden?')) {
-                    confirmOrder(order.id).then(() => {
-                        fetchPurchaseOrders(); // Actualiza la lista después de confirmar
-                    }).catch(error => {
-                        console.error('Error al confirmar la orden:', error);
-                        alert('No se pudo confirmar la orden. Intenta de nuevo.');
-                    });
+                    confirmOrder(order.id); // Llama a la función directamente
                 }
             } else {
                 alert('Solo las órdenes pendientes pueden ser confirmadas.');
             }
         });
     });
-}
-
-
-// Function to delete an order
-function deleteOrder(orderId) {
-    if (!user_id || !token) {
-        alert('No estás autenticado para eliminar órdenes.');
-        return;
     }
+
+
+
+/**
+ * Función para eliminar una orden de compra por su ID.
+ * @param {number} orderId - ID de la orden a eliminar.
+ */
+function deleteOrder(orderId) {
+    clearMessage('OrderRegisterMessage'); // Limpia cualquier mensaje previo
 
     fetch(apiURL + `/user/${user_id}/orders/${orderId}`, {
         method: 'DELETE',
@@ -392,50 +439,77 @@ function deleteOrder(orderId) {
         if (!response.ok) {
             // Leer el cuerpo de la respuesta para obtener el mensaje de error específico
             return response.json().then(errorData => {
-                throw new Error(errorData.message || 'Error al eliminar la orden'); // Usa el mensaje de la API o un mensaje genérico si no hay mensaje
+                throw new Error(errorData.message || 'Error al eliminar la orden');
             });
         }
         return response.json();
     })
     .then(data => {
         alert(data.message);
-        fetchPurchaseOrders();
+        fetchPurchaseOrders(); // Actualiza la lista después de eliminar
     })
     .catch(error => {
         console.error('Error:', error);
-        alert(error.message || 'No se pudo eliminar la orden.'); // Muestra el mensaje de error específico o un mensaje genérico
+        alert(error.message || 'No se pudo eliminar la orden.');
     });
 }
 
-function confirmOrder(orderId) {
-    return new Promise((resolve, reject) => {
-        if (!user_id || !token) {
-            reject('No estás autenticado para confirmar órdenes.');
-            return;
-        }
 
-        fetch(apiURL + `/user/${user_id}/orders/${orderId}`, {
-            method: 'PUT',
-            headers: {
-                'x-access-token': token // Ya no incluimos 'Content-Type': 'application/json'
-            },
-            body: null // Enviamos body como null
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || 'Error al confirmar la orden');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert(data.message);
-            resolve();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            reject(error.message || 'No se pudo confirmar la orden.');
-        });
+/**
+ * Función para confirmar una orden de compra por su ID.
+ * Actualiza la fecha de recepción de la orden a la fecha actual.
+ * @param {number} orderId - ID de la orden a confirmar.
+ */
+function confirmOrder(orderId) {
+    clearMessage('OrderRegisterMessage'); // Limpia cualquier mensaje previo
+
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+
+    // Realizar la solicitud a la API para confirmar la orden
+    fetch(apiURL + `/user/${user_id}/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+        },
+        body: JSON.stringify({ received_date: formattedDate }) // Enviar la fecha en formato YYYY-MM-DD
+    })
+    .then(response => {
+        // Si la respuesta no es exitosa, intentar obtener el mensaje de error
+        if (!response.ok) {
+            return response.text().then(text => {
+                // Intentar parsear como JSON, si falla usar el texto plano
+                try {
+                    const errorData = JSON.parse(text);
+                    throw new Error(errorData.error || 'Error al confirmar la orden');
+                } catch (e) {
+                    throw new Error(text || 'Error al confirmar la orden');
+                }
+            });
+        }
+        return response.json(); // Si es exitosa, parsear como JSON
+    })
+    .then(data => {
+        // Mostrar mensaje de éxito
+        alert(data.message);
+        fetchPurchaseOrders(); // Actualizar la lista de órdenes de compra
+    })
+    .catch(error => {
+        // Mostrar mensaje de error
+        console.error('Error:', error);
+        alert(error.message || 'No se pudo confirmar la orden.');
     });
+}
+
+/**
+ * Función para limpiar el contenido de un elemento de mensaje en la interfaz.
+ * @param {string} elementId - ID del elemento HTML que contiene el mensaje.
+ */
+function clearMessage(elementId) {
+    const messageElement = document.getElementById(elementId);
+    if (messageElement) {
+        messageElement.textContent = ''; // Limpia el contenido del mensaje
+    }
 }
