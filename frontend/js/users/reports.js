@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Cargar el token de localStorage y verificar autenticación
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('id');
     const username = localStorage.getItem('username');
 
-    if (token && user_id) {
-        document.getElementById("Welcome_username").textContent = username || '';
-
+    if (!token) {
+        // Si no existe un token, se redirige a la página de login
+        window.location.href = "login.html";
+    } else {
+        document.getElementById("Welcome_username").innerHTML = username;       
         // Event listeners para los botones de los modales
         const openModalInventarioButton = document.querySelector('[onclick="openModal(\'modalInventario\')"]');
         if (openModalInventarioButton) {
@@ -27,8 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 fetchPurchaseOrders(user_id, token);
             });
         }
-    } else {
-        window.location.href = "login.html";
     }
 });
 

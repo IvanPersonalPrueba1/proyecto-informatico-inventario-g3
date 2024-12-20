@@ -2,20 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cargar el token de localStorage y verificar autenticación
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('id');
+    const username = localStorage.getItem('username');
 
-    if (token) {
-        // Cargar productos en stock en el desplegable
-        loadProducts(user_id, token);
-
-        // Cargar proveedores en el desplegable
-        loadSuppliers(user_id, token);
-
+    if (!token) {
+        // Redirigir al login si no hay token
+        window.location.href = "login.html";
+    } else {
+        document.getElementById("username").innerHTML = username;           
+        loadProducts(user_id, token); // Cargar productos en stock en el desplegable        
+        loadSuppliers(user_id, token); // Cargar proveedores en el desplegable
         loadProductsSelect(user_id, token);
 
         // Configurar el evento de clic para el botón de registrar proveedor
         const registerSupplierBtn = document.getElementById('registerSupplierBtn');
         if (registerSupplierBtn) {
-            registerSupplierBtn.addEventListener('click', () => registerSupplier(user_id, token)); 
+            registerSupplierBtn.addEventListener('click', () => registerSupplier(user_id, token));
         } else {
             console.error("Elemento con ID 'registerSupplierBtn' no encontrado");
         }
@@ -31,13 +32,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Configurar el evento de clic para el botón de consultar proveedores
         const getSuppliersBtn = document.getElementById('getSuppliersBtn');
         if (getSuppliersBtn) {
-            getSuppliersBtn.addEventListener('click', () => getSuppliersByProduct(user_id, token)); 
+            getSuppliersBtn.addEventListener('click', () => getSuppliersByProduct(user_id, token));
         } else {
             console.error("Elemento con ID 'getSuppliersBtn' no encontrado");
         }
-    } else {
-        // Redirigir al login si no hay token
-        window.location.href = "login.html";
     }
 });
 
@@ -347,4 +345,11 @@ function loadProductsSelect(user_id, token) {
         populateProductLists(result.data);
     })
     .catch(error => showMessage(error.message, 'error', 'ProductListMessage'));
+}
+
+
+// Función para cerrar la sesión del usuario
+function userLogout() {
+    localStorage.clear(); // Limpia todos los datos del almacenamiento
+    window.location.href = "login.html";
 }

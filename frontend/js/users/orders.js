@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Verificar si el usuario está autenticado al cargar la página
+    // Cargar el token de localStorage y verificar autenticación
     const token = localStorage.getItem('token');
+    const user_id = localStorage.getItem('id');
+    const username = localStorage.getItem('username');
     if (!token) {
          // Redirigir al usuario a la página de login si no hay token
         window.location.href = "login.html";
     } else {
         // Cargar productos, proveedores y órdenes de compra si el usuario está autenticado
+        document.getElementById("Welcome_username").innerHTML = username;
         loadProducts();
         loadSuppliers();
         fetchPurchaseOrders();
@@ -22,10 +25,6 @@ function handleFormSubmission(callback) {
     };
 }
 
-// Variables globales para almacenar el token, ID de usuario y nombre de usuario
-const token = localStorage.getItem('token');
-const user_id = localStorage.getItem('id');
-const username = localStorage.getItem('username');
 
 // Elementos del DOM para la navegación lateral (sidebar)
 const openSidebarButton = document.getElementById('openSidebar');
@@ -512,4 +511,11 @@ function clearMessage(elementId) {
     if (messageElement) {
         messageElement.textContent = ''; // Limpia el contenido del mensaje
     }
+}
+
+
+// Función para cerrar la sesión del usuario
+function userLogout() {
+    localStorage.clear(); // Limpia todos los datos del almacenamiento
+    window.location.href = "login.html";
 }

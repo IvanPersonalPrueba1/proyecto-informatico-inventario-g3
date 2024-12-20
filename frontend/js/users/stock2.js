@@ -1,18 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Cargar el token de localStorage y verificar autenticación
     const token = localStorage.getItem('token');
     const user_id = localStorage.getItem('id');
-    if (token) {
-        const username = localStorage.getItem('username');
-        loadProducts(user_id, token); // Cargar productos en el dropdown
-        loadProductsInStock(user_id, token);
-        
-        document.getElementById("username").innerHTML = username;
+    const username = localStorage.getItem('username');
 
-    } else {
+    if (!token) {
+        // Si no existe un token, se redirige a la página de login
         window.location.href = "login.html";
+    } else {
+        document.getElementById("username").innerHTML = username;
+        // Si existe un token, se ejecutan las siguientes acciones       
+        loadProducts(user_id, token); // Cargar productos en el dropdown
+        loadProductsInStock(user_id, token);        
+        checkLowStock(user_id, token); // Se ejecuta checkLowStock solo si hay token
     }
-
-    checkLowStock(user_id, token);
 });
 
 function loadProducts(user_id, token) {
