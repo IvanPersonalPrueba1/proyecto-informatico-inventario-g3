@@ -114,9 +114,9 @@ class Order:
         return {"message": "Orden creada exitosamente"}, 200
 
     @classmethod
-    def update_order(cls, user_id, order_id):  
+    def update_order(cls, user_id, order_id, received_date=None):
         new_status = 'completed'
-        received_date = received_date or datetime.date.today() 
+        received_date = received_date or datetime.date.today().strftime('%Y-%m-%d')
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
