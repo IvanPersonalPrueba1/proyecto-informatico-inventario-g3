@@ -115,27 +115,10 @@ class Category():
                 if not existing_category:
                     raise DBError("La categoría no existe para este usuario")
 
-                # Asegurarse de que la categoría "None" esté configurada
-                cursor.execute('SELECT id FROM categories WHERE name = "None"')
-                none_category = cursor.fetchone()
-
-                # Si no existe la categoría "None", puedes decidir crearla aquí
-                if not none_category:
-                    cursor.execute(
-                        'INSERT INTO categories (name, descripcion, user_id) VALUES (%s, %s, %s)',
-                        ('None', 'Categoría predeterminada para productos no categorizados', user_id)
-                    )
-                    connection.commit()
-                    # Recuperar el ID de la categoría "None" después de crearla
-                    cursor.execute('SELECT id FROM categories WHERE name = "None" AND user_id = %s', (user_id,))
-                    none_category = cursor.fetchone()
-
-                none_category_id = none_category[0]
-
-                # Actualizar los productos para asignarlos a la categoría "None"
+                # Actualizar los productos para desvincularlos de la categoría eliminada
                 cursor.execute(
-                    'UPDATE products SET category_id = %s WHERE category_id = %s AND user_id = %s',
-                    (none_category_id, category_id, user_id)
+                    'UPDATE products SET category_id = NULL WHERE category_id = %s AND user_id = %s',
+                    (category_id, user_id)
                 )
 
                 # Eliminar la categoría
@@ -143,6 +126,7 @@ class Category():
                 connection.commit()
 
             except Exception as e:
+                connection.rollback()  # Asegúrate de revertir en caso de error
                 raise DBError(f"Error al eliminar la categoría: {str(e)}")
 
         return {"message": "Categoría eliminada exitosamente"}, 200

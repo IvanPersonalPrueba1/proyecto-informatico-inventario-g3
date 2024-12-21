@@ -41,7 +41,7 @@
         <form id="registerCategoryForm">
             <h2> Crear una nueva categoria </h2>
             <input type="text" id="name_category" placeholder="Nombre de la Categoria" required>
-            <input type="text" id="description" placeholder="descripcion de Categoría" required>
+            <textarea id="description" placeholder="descripcion de Categoría" required rows="4" cols="50"></textarea>
             <button id="registerCategoryBtn" type="submit">Agregar Categoria</button>
         </form>
 
@@ -53,8 +53,18 @@
                 <!-- Las opciones se llenarán automáticamente por la función loadCategories -->
             </select>
             <input type="text" id="new_name_category" placeholder="Nuevo Nombre de la Categoria" required>
-            <input type="text" id="new_description" placeholder="Nueva descripcion de Categoría" required>
+            <textarea id="new_description" placeholder="Nueva descripcion de Categoría" required rows="4" cols="50"></textarea>
             <button id="updateCategoryBtn" type="submit">Actualizar Categoria</button>
+        </form>
+
+        <div id="deleteCategoryMessage" class="message"></div>
+
+        <form id="deleteCategoryForm">
+            <h2> Eliminar una categoria</h2>
+            <select id="category_delete_id" name="cateogory_id" required>
+                <!-- Las opciones se llenarán automáticamente por la función loadCategories -->
+            </select>
+            <button id="deleteCategoryBtn" type="submit">Eliminar Categoria</button>
         </form>
 
         <h2>Lista de Categorias</h2>

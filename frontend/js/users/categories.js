@@ -20,6 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
         updateCategory(user_id, token); // Llamar a la función para registrar la categoría
     });
+
+    // Añadir evento al formulario para registrar una nueva categoría
+    document.getElementById('deleteCategoryForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+        deleteCategory(user_id, token); // Llamar a la función para registrar la categoría
+    });
 });
 
 const username = localStorage.getItem('username');
@@ -41,9 +47,11 @@ function loadCategories(user_id, token) {
         }
 
         const categoryList = document.getElementById('category-list');
-        const categorySelect = document.getElementById('category_id'); // Referencia al select
+        const categorySelect = document.getElementById('category_id'); // Referencia al selectv
+        const categoryDeleteSelect = document.getElementById('category_delete_id')
         categoryList.innerHTML = ''; // Limpiar la lista anterior
         categorySelect.innerHTML = ''; // Limpiar el select anterior
+        categoryDeleteSelect.innerHTML = '';
 
         result.data.forEach(category => {
             // Crear un elemento de lista
@@ -56,6 +64,11 @@ function loadCategories(user_id, token) {
             option.value = category.id; // Usar el id de la categoría como valor
             option.textContent = category.name; // Nombre de la categoría como texto
             categorySelect.appendChild(option);
+
+            const option2 = document.createElement('option');
+            option2.value = category.id; // Usar el id de la categoría como valor
+            option2.textContent = category.name; // Nombre de la categoría como texto
+            categoryDeleteSelect.appendChild(option2)
         });
     })
     .catch(error => {
@@ -143,6 +156,43 @@ function updateCategory(user_id, token) {
             showMessage("No se pudo conectar con el servidor. Verifique su conexión o intente más tarde.", 'error', 'updateCategoryMessage');
         } else {
             showMessage(error.message || "Error al actualizar la categoría", 'error', 'updateCategoryMessage');
+        }
+    });
+}
+
+function deleteCategory(user_id, token) {
+    const category_id = document.getElementById('category_delete_id').value;
+    if (!category_id) {
+        showMessage('Por favor, complete todos los campos.', 'error', 'deleteCategoryMessage');
+        return;
+    }
+
+    fetch(apiURL + `/user/${user_id}/categories/${category_id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+        },
+    })
+    .then(response => {
+        // Verifica si la respuesta fue exitosa
+        if (!response.ok) {
+            return response.json().then(error => {
+                throw new Error(error.message || "Error en la eliminación de la categoría");
+            });
+        }
+        return response.json(); // Retorna el JSON si la respuesta fue exitosa
+    })
+    .then(result => {
+        showMessage('Categoría eliminada exitosamente', 'success', 'deleteCategoryMessage');
+        document.getElementById('deleteCategoryForm').reset(); // Reiniciar el formulario
+        loadCategories(user_id, token); // Recargar las categorías para reflejar el cambio
+    })
+    .catch(error => {
+        if (error.message === "Failed to fetch") {
+            showMessage("No se pudo conectar con el servidor. Verifique su conexión o intente más tarde.", 'error', 'deleteCategoryMessage');
+        } else {
+            showMessage(error.message || "Error al eliminar la categoría", 'error', 'deleteCategoryMessage');
         }
     });
 }

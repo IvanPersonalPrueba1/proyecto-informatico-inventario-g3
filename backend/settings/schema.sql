@@ -8,7 +8,7 @@ CREATE TABLE users (
 -- Crear tabla de categorías
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE, -- Se añade UNIQUE para evitar duplicados de "None"
+    name VARCHAR(255) NOT NULL, -- Se añade UNIQUE para evitar duplicados de "None"
     descripcion TEXT,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

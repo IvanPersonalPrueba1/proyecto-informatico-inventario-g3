@@ -122,7 +122,6 @@ function updateProduct(user_id, token) {
     const productId = document.getElementById('productSelectUpdate').value;
     const data = collectProductData('update', productId);
     if (!data) return;
-
     fetch(apiURL + `/user/${user_id}/products/${productId}`, {
         method: 'PUT',
         headers: {
