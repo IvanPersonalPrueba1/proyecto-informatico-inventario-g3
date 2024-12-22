@@ -334,21 +334,50 @@ function populateProductLists(products) {
     });
 }
 
+
+ //Carga los productos del usuario en el select 'consult_product_id'.
 function loadProductsSelect(user_id, token) {
+    // Realiza una petición GET a la API para obtener la lista de productos del usuario.
     fetch(apiURL + `/user/${user_id}/products`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': token
+            'Content-Type': 'application/json', // Indica que la petición es de tipo JSON.
+            'x-access-token': token // Incluye el token de autenticación en la cabecera.
         }
     })
-    .then(response => handleResponse(response))
+    .then(response => handleResponse(response)) // Llama a la función handleResponse para gestionar la respuesta.
     .then(result => {
-        populateProductLists(result.data);
+        // Si la respuesta es exitosa, llama a la función populateProductSelect para llenar el select.
+        // result.data contiene la lista de productos.
+        populateProductSelect(result.data);
     })
-    .catch(error => showMessage(error.message, 'error', 'ProductListMessage'));
+    .catch(error => showMessage(error.message, 'error', 'ProductListMessage')); // Captura cualquier error y muestra un mensaje.
 }
 
+
+//Llena el select 'consult_product_id' con la lista de productos proporcionada.
+function populateProductSelect(products) {
+    // Obtiene la referencia al elemento select con id 'consult_product_id'.
+    const productSelect = document.getElementById('consult_product_id');
+
+    // Limpia el contenido actual del select (elimina cualquier opción existente).
+    productSelect.innerHTML = '';
+
+    // Crea la opción predeterminada '-- Seleccione un producto --'.
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = '-- Seleccione un producto --'; // Texto que se muestra al usuario.
+    defaultOption.value = ''; // Valor vacío para la opción por defecto.
+    productSelect.appendChild(defaultOption); // Agrega la opción por defecto al select.
+
+    // Itera sobre cada producto en la lista de productos.
+    products.forEach(product => {
+        // Crea un nuevo elemento 'option' para cada producto.
+        const option = document.createElement('option');
+        option.value = product.id; // Establece el valor de la opción como el ID del producto.
+        option.textContent = product.name; // Establece el texto de la opción como el nombre del producto.
+        productSelect.appendChild(option); // Agrega la opción del producto al select.
+    });
+}
 
 // Función para cerrar la sesión del usuario
 function userLogout() {

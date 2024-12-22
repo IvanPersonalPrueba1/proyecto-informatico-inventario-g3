@@ -347,3 +347,109 @@ button[onclick^="openModal"]:hover {
 .summary-table th {
   background-color: #f2f2f2;
 }
+
+
+/* Estilos para el h3 dentro del modal */
+.modal-content h3 {
+  margin-top: 0; /* Elimina el margen superior por defecto */
+  color: #7b4ba3; /* Color morado, consistente con el resto del diseño */
+  text-align: center; /* Centra el título */
+  margin-bottom: 20px;
+}
+
+/* Estilos para la tabla dentro del modal */
+.modal-content #suppliersTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modal-content #suppliersTable th,
+.modal-content #suppliersTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.modal-content #suppliersTable th {
+  background-color: #f2f2f2;
+  color: #7b4ba3;
+}
+
+
+/* --- Estilos para el modal de Órdenes de Compra --- */
+#orderModal .modal-content {
+  margin: 10% auto; /* Centrado y margen superior para separarlo del top */
+  max-width: 700px; /* Ancho máximo para que no se expanda demasiado */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra para que resalte */
+}
+
+/* Estilos específicos para el botón de cerrar del modal de órdenes */
+#orderModal .close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  background: none; /* Sin fondo */
+  border: none; /* Sin borde */
+  padding: 0; /* Sin padding */
+  cursor: pointer;
+  margin-top: -10px; /* Ajuste para posicionarlo mejor */
+  margin-right: -10px; /* Ajuste para posicionarlo mejor */
+}
+
+#orderModal .close-button:hover,
+#orderModal .close-button:focus {
+  color: black; /* Color negro al hacer hover o focus */
+  text-decoration: none; /* Sin subrayado */
+  cursor: pointer;
+}
+
+/* Estilos para el h3 dentro del modal de órdenes */
+#orderModal .modal-content h3 {
+  margin-bottom: 15px;
+  color: #7b4ba3; /* Color morado corporativo */
+}
+
+/* --- Estilos para la lista de ordenes --- */
+#order-list {
+  list-style: none; /* Sin viñetas */
+  padding: 0; /* Sin padding */
+}
+
+#order-list li {
+  background-color: #f8f8f8; /* Fondo gris claro */
+  border: 1px solid #ddd; /* Borde gris claro */
+  margin-bottom: 10px; /* Margen inferior para separarlas */
+  padding: 15px; /* Espacio interno */
+  border-radius: 5px; /* Bordes redondeados */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+  transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+#order-list li:hover {
+  background-color: #f0f0f0; /* Fondo un poco más oscuro al hacer hover */
+}
+
+/* --- Estilos para los detalles dentro del modal --- */
+#modal-order-details p {
+  margin: 10px 0; /* Margen superior e inferior */
+  line-height: 1.6; /* Interlineado para mejor legibilidad */
+}
+
+#modal-order-details strong {
+  color: #7b4ba3; /* Color morado corporativo para los textos en negrita */
+}
+
+@media screen and (max-width: 768px) {
+  #orderModal .modal-content {
+      margin: 15% auto; /* Más margen superior en pantallas medianas */
+      width: 90%; /* Ancho del 90% en pantallas medianas */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #orderModal .modal-content {
+      margin: 20% auto; /* Más margen superior en pantallas pequeñas */
+      padding: 10px; /* Padding más pequeño en pantallas pequeñas */
+  }
+}

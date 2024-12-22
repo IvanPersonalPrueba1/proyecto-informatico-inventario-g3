@@ -5,57 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/styles_general.css">
     <title>Gestión de Órdenes de Compra</title>
-    <style>
-        /* Estilos para la ventana modal */
-        .modal {
-            display: none;
-            /* Oculto por defecto */
-            position: fixed;
-            /* Se queda en el lugar aunque se haga scroll */
-            z-index: 1;
-            /* Se sitúa por encima de todo */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            /* Permite scroll si el contenido es demasiado grande */
-            background-color: rgba(0, 0, 0, 0.4);
-            /* Fondo negro con opacidad */
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            /* 15% desde arriba y centrado */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            /* Podría ser más o menos, dependiendo del diseño */
-            max-width: 600px;
-            /* Ancho máximo para evitar que sea demasiado ancho en pantallas grandes */
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
-    <!-- Botón para abrir el sidenav -->
     <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
     
-    <!-- Barra lateral tipo overlay -->
     <div id="sidebar" class="sidebar" aria-hidden="true">
         <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
         <h2>Gestión de Inventario</h2>
@@ -72,7 +25,6 @@
         </nav>
     </div>
 
-    <!-- Contenido Principal -->
     <div class="main-content">
         <header class="header">
             <h2>Bienvenido, <span id="Welcome_username"></span></h2>
@@ -81,10 +33,8 @@
         
         <h1>Gestion de ordenes</h1>
 
-        <!-- Mensajes de respuesta -->
         <div id="OrderRegisterMessage" class="message"></div>
 
-        <!-- Formulario para crear una nueva orden -->
         <form id="order-form">
             <label for="productSelect">Producto:</label>
             <select id="productSelect" name="productSelect" required></select>
@@ -98,19 +48,16 @@
             <button type="submit">Agregar Orden</button>
         </form>
 
-        <!-- Lista de órdenes -->
         <div id="OrderListMessage" class="message"></div>
         <h2>Lista de Órdenes</h2>
         <ul id="order-list"></ul>
 
         <div id="orderModal" class="modal">
             <div class="modal-content">
-                <span class="close" id="closeModal">&times;</span>
-                <div id="modal-order-details">
-                    </div>
+                <span class="close-button" id="closeModal">&times;</span>
+                <div id="modal-order-details"></div>
             </div>
         </div>
-
     </div>
 
     <script src="../js/common/common.js"></script>

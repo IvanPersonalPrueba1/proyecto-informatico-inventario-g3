@@ -35,7 +35,7 @@ function loadProducts(user_id, token) {
 function populateProductLists(products) {
     const productSelect = document.getElementById('productId');
     if (productSelect) {
-        productSelect.innerHTML = ''; // Limpiar opciones existentes
+        productSelect.innerHTML = '<option value="">Seleccione un producto</option>'; // Opción inicial
 
         if (Array.isArray(products) && products.length > 0) {
             products.forEach(product => {
