@@ -57,6 +57,7 @@ En **Windows**:
 ```
 
 NOTA: Si se produce un error al ejecutar el comando anterior, abrir VSC en modo Administrador y ejecutar el siguiente comando para activar los permisos en Windows:
+
 ```bash
 # sólo si el comando anterior produce un error
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -86,12 +87,11 @@ Los archivos de inicialización de la base de datos se encuentran en la carpeta 
 │       └── create_db.sql
 │       └── create_user.sql
 |       └── schema.sql
-│       └── test_seeder.sql
+
 ```
 - `create_db.sql/`: Contiene las sentencias SQL necesarias para la creación de la base de datos.
 - `create_user.sql/`: Contiene las sentencias SQL necesarias para la creación de un usuario con acceso a la base de datos.
 - `schema.sql/`: Contiene la definición de las tablas necesarias en la base de datos. 
-- `test_seeder.sql/`: Contiene las sentencias SQL necesarias para insertar datos de prueba en la base de datos (se usa opcionalmente para testing).
 
 Para realizar la inicialización, se puede copiar el contenido de cada archivo y ejecutarlo directamente en la pestaña SQL de phpMyAdmin (o una herramienta similar que se utilice). Los archivos de creación se deben ejecutar desde la pestaña SQL dentro del servidor, mientras que el archivo de insersión de datos de prueba se debe ejecutar desde la pestaña SQL de la base de datos ya creada.  
 
@@ -102,7 +102,6 @@ cd settings
 mysql --default-character-set=utf8mb4 -u root -p -e "source create_bd.sql"
 mysql --default-character-set=utf8mb4 -u root -p -e "source create_user.sql"
 mysql --default-character-set=utf8mb4 -u root -p -e "source schema.sql"
-mysql --default-character-set=utf8mb4 -u root -p -e "source test_seeder.sql"
 ```
 Explicación del comando:
 - `mysql`: Corresponde al ejecutable mysql.exe. Debe estar configurado correctamente como variable de entorno del sistema, de lo contrario no será reconocido. (Equipo->Propiedades->Configuración Avanzada del Sistema->Variables de entorno, agregar a la variable Path la ruta donde se ubica el archivo, ej: C:\xampp\mysql\bin\mysql.exe).
@@ -116,16 +115,17 @@ NOTA: se requiere contar con un usuario `root` para ejecutar correctamente los c
 
 ### 7. Crear un archivo con las variables de entorno
 
-En la raíz del proyecto, crear un archivo `.env` con el siguiente contenido
+En la carpeta bakend del proyecto, crear un archivo `.env` con el siguiente contenido
 
 ```
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=flask_user_name
-DB_PASSWORD=flask_user_password
-DB_NAME=flask_app_db
-PORT=5000
-HOST=localhost
+DB_HOST=localhost          
+DB_PORT=3306               
+DB_USER=gestion_inv_user   
+DB_PASSWORD=clave_app     
+DB_NAME=gestion_inventario 
+PORT=5000                  
+HOST=localhost              
+
 ```
 
 La configuración en este archivo debe coincidir con la utilizada para crear la base de datos y el usuario. Los valores del ejemplo son los mismos que se definen en los scripts de inicialización en SQL. Cuando el proyecto se despliegue en un servicio en la nube, se definirán valores específicos para esta configuración y el proyecto ya queda preparado para actualizar dichos valores.
@@ -156,7 +156,7 @@ backend
 │   │   ├── products.py    # Modelo para los productos
 │   │   ├── reports.py     # Modelo para la generación de reportes
 │   │   ├── stock.py       # Modelo para el manejo de inventario
-│   │   ├── supplier.py   # Modelo para los proveedores
+│   │   ├── supplier.py    # Modelo para los proveedores
 │   │   └── user.py        # Modelo para los usuarios
 │   ├── routes/
 │   │   ├── categories.py  # Rutas para la gestión de categorías
@@ -164,7 +164,7 @@ backend
 │   │   ├── products.py    # Rutas para la gestión de productos
 │   │   ├── reports.py     # Rutas para la generación de reportes
 │   │   ├── stock.py       # Rutas para el manejo de inventario
-│   │   ├── supplier.py   # Rutas para la gestión de proveedores
+│   │   ├── supplier.py    # Rutas para la gestión de proveedores
 │   │   └── user.py        # Rutas para la gestión de usuarios
 │   ├── utils/
 │   │   └── security.py   # Funciones de seguridad y autenticación
@@ -173,10 +173,8 @@ backend
 │       ├── create_db.sql     # Script para crear la base de datos
 │       ├── create_user.sql   # Script para crear usuarios en la base de datos
 │       ├── requirements.txt  # Dependencias del proyecto
-│       ├── schema.sql        # Definición del esquema de la base de datos
-│       └── test_seeder.sql   # Script para insertar datos de prueba
-├── main.py      
-├── README.md    # Este archivo
+│       └── schema.sql        # Definición del esquema de la base de datos     
+└── main.py      
 ```
 
 - `.venv/`: Entorno virtual (esta carpeta está en `.gitignore` y no debe ser incluida en el repositorio).
@@ -184,7 +182,7 @@ backend
 - `db/`: Carpeta de configuración de la conexión a la base de datos. Implementa la función get_db_connection(), que debe importarse en cada archivo que requiera realizar una consulta a la base de datos.
 - `models/`: Carpeta de definición de modelos. Habitualmente cada archivo en esta carpeta se nombra de la misma forma que el recurso correspondiente. Implementa una clase con el nombre del recurso, con todas las operaciones asociadas al mismo, incluyendo la interacción con la base de datos.
 - `routes/`: Carpeta de definición de rutas. Habitualmente cada archivo en esta carpeta se nombra de la misma forma que el recurso correspondiente. Debe importar el modelo al que hace referencia (y los relacionados, si es necesario). Define las rutas asociadas al recurso e invoca los métodos implementados en la clase asociada. Se utilizan bloques try-except para gestionar las posibles excepciones y evitar que se detenga el servidor.
-- `settings/`: Carpeta de configuraciones y archivos de inicialización del proyecto. Puede incluir, por ejemplo, un archivo requirements.txt para la instalación de dependencias de python, archivos de scripts SQL para la inicialización de bases de datos, inserción de registros de prueba, etc.
+- `settings/`: Carpeta de configuraciones y archivos de inicialización del proyecto. Puede incluir, por ejemplo, un archivo requirements.txt para la instalación de dependencias de python, archivos de scripts SQL para la inicialización de bases de datos y tablas.
 - `__init__.py`:Archivo principal del módulo api. Se encarga de inicializar la aplicación Flask, configurar CORS para permitir solicitudes entre dominios, definir una ruta básica (/) para probar el estado del servidor y registrar las rutas definidas en la carpeta routes/. 
 - `main.py`: Archivo de inicio de la aplicación
 - `requirements.txt`: Archivo que contiene las dependencias del proyecto.
@@ -224,7 +222,7 @@ frontend
 └── register.html             
 ```
 
-- `assets/video/`: Contiene archivos multimedia, como videos, utilizados en el proyecto.
+- `assets/video/`: Contiene archivos multimedia que se utilizan en el proyecto.
 - `css/`: Carpeta que almacena los archivos CSS del proyecto, organizados según su propósito.
 - `common/`: Funciones comunes y reutilizables en múltiples partes del proyecto.
 - `users/`: Scripts JavaScript específicos para diferentes funcionalidades.
