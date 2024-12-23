@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles_general.css">
+    <title>Gestión de Reportes</title>
+</head>
+<body>
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
+        <h2>Gestión de Inventario</h2>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
+
+        <h1>Reportes de Compras</h1>
+
+        <div id="modalListaOrdenes" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal('modalListaOrdenes')">&times;</span>
+                <h2>Lista de Órdenes</h2>
+                <ul id="modal-lista-ordenes-lista"></ul> </div>
+        </div>
+
+        <div id="modalInventario" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal('modalInventario')">&times;</span>
+                <h2>Inventario Actual</h2>
+                <ul id="modal-inventario-lista"></ul>
+            </div>
+        </div>
+        
+        <div id="modalBajoStock" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal('modalBajoStock')">&times;</span>
+                <h2>Productos con Bajo Stock</h2>
+                <ul id="modal-bajo-stock-lista"></ul>
+            </div>
+        </div>
+        
+        <button onclick="openModal('modalInventario')">Ver Inventario Actual</button>
+        <button onclick="openModal('modalBajoStock')">Ver Productos con Bajo Stock</button>
+        <button onclick="openModal('modalListaOrdenes')">Ver Lista de Órdenes</button>
+    </div>
+
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/reports.js"></script>
+</body>
+</html>

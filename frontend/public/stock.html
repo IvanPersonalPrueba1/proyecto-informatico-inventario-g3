@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Stock</title>
+    <link rel="stylesheet" href="../css/styles_general.css">
+</head>
+<body>
+    <!-- Botón para abrir el sidenav -->
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <!-- Barra lateral tipo overlay -->
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
+        <h2>Gestión de Inventario</h2>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Bienvenido, <span id="username"></span></h2>
+            <div class="header-right">
+                <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+                <div class="notification-icon" id="notification-icon" aria-label="Notificaciones de stock bajo">
+                    🔔
+                </div>
+            </div>
+        </header>
+
+        <h1>Gestion de Stock</h1>
+
+        <!-- Sección de productos con bajo stock -->
+        <section id="lowStockSection" style="display: none;">
+            <h3>Productos con stock bajo:</h3>
+            <ul id="lowStockList"></ul>
+        </section>
+
+        <!-- Nueva sección para listar los productos -->
+        <section id="stockListSection">
+            <h3>Lista de Productos en Stock:</h3>
+            <ul id="stockList"></ul>
+        </section>
+
+        <h3 class="update-stock-heading">Actualizar Stock</h3>
+        <form id="updateStockForm">
+            <label for="productId">ID del Producto:</label>
+            <select id="productId" name="productId" required>
+                <!-- Opciones serán llenadas mediante JS -->
+            </select>
+
+            <label for="newQuantity">Nueva Cantidad:</label>
+            <input type="number" id="newQuantity" name="newQuantity" required min="0">
+
+            <button type="button" id="updateStockBtn" onclick="updateStock()">
+                Actualizar Stock
+                <span class="loading-spinner" id="loading-spinner" style="display: none;"></span>
+            </button>
+        </form>
+        <p id="updateStockMessage" class="message"></p>
+    </div>
+
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/stock2.js"></script>
+</body>
+</html>

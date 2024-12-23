@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles_general.css">
+    <title>Gestión de Productos</title>
+</head>
+<body>
+    <!-- Botón para abrir el sidenav -->
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <!-- Barra lateral tipo overlay -->
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
+        <h2>Gestión de Inventario</h2>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
+        
+        <h1>Gestión de Productos</h1>
+
+        <div id="ProductListMessage" class="message"></div>
+
+        <h2>Lista de Productos</h2>
+        <ul id="productList"></ul>
+
+        <div id="registerProductMessage" class="message"></div>
+
+        <!-- Formulario para crear un nuevo producto -->
+        <form id="createProductForm">
+            <h2>Crear un nuevo producto </h2>
+            <input type="text" id="createProductName" placeholder="Nombre del Producto" required>
+            <input type="number" id="createProductPrice" placeholder="Precio" required min="0">
+            <select id="NewProductCategorySelect" name="NewProductCategorySelect"></select>
+            <button type="submit">Agregar Producto</button>
+        </form>
+
+        <div id="updateProductMessage" class="message"></div>
+
+        <!-- Formulario para Actualizar un producto -->
+        <form id="updateProductForm">
+            <h2>Actualizar un producto</h2>
+            <select id="productSelectUpdate" name="productSelectUpdate"></select>
+            <input type="text" id="updatedProductName" placeholder="Nuevo Nombre del Producto" >
+            <input type="number" id="updatedProductPrice" placeholder="Nuevo Precio" min="0" step="0.01">
+            <select id="UpdateProductCategorySelect" name="UpdateProductCategorySelect"></select>
+            <button type="submit">Actualizar Producto</button>
+        </form>
+
+        <div id="deleteProductMessage" class="message"></div>
+
+        <!-- Formulario para eliminar un producto -->
+        <form id="deleteProductForm">
+            <h2>Eliminar un producto</h2>
+            <select id="productSelectDelete" name="productSelectDelete" required></select>
+            <button type="submit">Eliminar Producto</button>
+        </form>
+
+        <div id="listProductsByCategoryMessage" class="message"></div>
+
+        <!-- Formulario para listar productos por categoría -->
+        <form id="listProductsByCategoryForm">
+            <h2>Lista de Productos por Categoría</h2>
+            <select id="categorySelectFilter" name="categorySelectFilter" required></select>
+            <button type="submit">Ver Productos por Categoría</button>
+            <ul id="productListCategoryFilter"></ul>
+        </form>
+    </div>
+
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/products.js"></script>
+</body>
+</html>

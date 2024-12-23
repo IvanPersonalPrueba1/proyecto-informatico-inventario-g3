@@ -1,0 +1,455 @@
+/* Estilos para el Dashboard */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+header.header {
+  background: linear-gradient(135deg, #7b4ba3, #b784e7);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 5px solid #5a3a7d;
+}
+
+header.header h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+header.header button#logout-btn {
+  background-color: #7b4ba3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+header.header button#logout-btn:hover {
+  background-color: #5a3a7d;
+}
+
+/* Botones generales */
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Sidebar */
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #7b4ba3;
+  overflow-x: hidden;
+  padding-top: 60px;
+  color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar.visible {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 250px; /* Ajusta esto al ancho deseado */
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.sidebar a {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: white;
+  display: block;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #520486;
+  border: 1px solid #7b4ba3;
+  border-radius: 5px;
+  color: #333;
+}
+
+.sidebar a:hover {
+  background-color: #6700d4;
+}
+
+.sidebar .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 30px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.open-btn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #7b4ba3;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.open-btn:hover {
+  background-color: #5a3a7d;
+}
+
+/* Contenido principal */
+.main-content {
+  margin: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.message {
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f4ff;
+  border: 1px solid #7b4ba3;
+  color: #5a3a7d;
+  font-size: 1rem;
+}
+
+form {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form h3 {
+  margin-bottom: 15px;
+  color: #7b4ba3;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+form input, form select, form textarea {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+form button {
+  background-color: #7b4ba3;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #5a3a7d;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f8f4ff;
+  border: 1px solid #7b4ba3;
+  border-radius: 5px;
+  color: #333;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #7b4ba3;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.notification-icon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  display: none;
+}
+
+.notification-icon.active::after {
+  display: block;
+}
+
+/* Responsividad */
+@media screen and (max-width: 768px) {
+  .sidebar {
+      padding-top: 40px;
+  }
+  .sidebar.visible {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 768px; /* Ajusta esto al ancho deseado */
+  }
+
+  form input, form select {
+      font-size: 0.9rem;
+  }
+
+  button {
+      font-size: 0.9rem;
+  }
+}
+
+/* Estilos generales para las ventanas modales de reportes */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Estilos específicos para los botones */
+button[onclick^="openModal"] {
+  padding: 10px 20px;
+  margin: 10px 0;
+  background-color: #4CAF50; /* Color verde */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[onclick^="openModal"]:hover {
+  background-color: #367c39; /* Un tono más oscuro de verde */
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+  .modal-content {
+      margin: 10% auto;
+      width: 95%;
+  }
+
+  button[onclick^="openModal"] {
+      padding: 8px 15px;
+      font-size: 0.9em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modal-content {
+      margin: 15% auto;
+      padding: 10px;
+  }
+
+  button[onclick^="openModal"] {
+      padding: 5px 10px;
+      font-size: 0.8em;
+  }
+}
+
+/* Estilos reporte órdenes de compra */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.summary-table th, .summary-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.summary-table th {
+  background-color: #f2f2f2;
+}
+
+
+/* Estilos para el h3 dentro del modal */
+.modal-content h3 {
+  margin-top: 0; /* Elimina el margen superior por defecto */
+  color: #7b4ba3; /* Color morado, consistente con el resto del diseño */
+  text-align: center; /* Centra el título */
+  margin-bottom: 20px;
+}
+
+/* Estilos para la tabla dentro del modal */
+.modal-content #suppliersTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modal-content #suppliersTable th,
+.modal-content #suppliersTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.modal-content #suppliersTable th {
+  background-color: #f2f2f2;
+  color: #7b4ba3;
+}
+
+
+/* --- Estilos para el modal de Órdenes de Compra --- */
+#orderModal .modal-content {
+  margin: 10% auto; /* Centrado y margen superior para separarlo del top */
+  max-width: 700px; /* Ancho máximo para que no se expanda demasiado */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra para que resalte */
+}
+
+/* Estilos específicos para el botón de cerrar del modal de órdenes */
+#orderModal .close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  background: none; /* Sin fondo */
+  border: none; /* Sin borde */
+  padding: 0; /* Sin padding */
+  cursor: pointer;
+  margin-top: -10px; /* Ajuste para posicionarlo mejor */
+  margin-right: -10px; /* Ajuste para posicionarlo mejor */
+}
+
+#orderModal .close-button:hover,
+#orderModal .close-button:focus {
+  color: black; /* Color negro al hacer hover o focus */
+  text-decoration: none; /* Sin subrayado */
+  cursor: pointer;
+}
+
+/* Estilos para el h3 dentro del modal de órdenes */
+#orderModal .modal-content h3 {
+  margin-bottom: 15px;
+  color: #7b4ba3; /* Color morado corporativo */
+}
+
+/* --- Estilos para la lista de ordenes --- */
+#order-list {
+  list-style: none; /* Sin viñetas */
+  padding: 0; /* Sin padding */
+}
+
+#order-list li {
+  background-color: #f8f8f8; /* Fondo gris claro */
+  border: 1px solid #ddd; /* Borde gris claro */
+  margin-bottom: 10px; /* Margen inferior para separarlas */
+  padding: 15px; /* Espacio interno */
+  border-radius: 5px; /* Bordes redondeados */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+  transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+#order-list li:hover {
+  background-color: #f0f0f0; /* Fondo un poco más oscuro al hacer hover */
+}
+
+/* --- Estilos para los detalles dentro del modal --- */
+#modal-order-details p {
+  margin: 10px 0; /* Margen superior e inferior */
+  line-height: 1.6; /* Interlineado para mejor legibilidad */
+}
+
+#modal-order-details strong {
+  color: #7b4ba3; /* Color morado corporativo para los textos en negrita */
+}
+
+@media screen and (max-width: 768px) {
+  #orderModal .modal-content {
+      margin: 15% auto; /* Más margen superior en pantallas medianas */
+      width: 90%; /* Ancho del 90% en pantallas medianas */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #orderModal .modal-content {
+      margin: 20% auto; /* Más margen superior en pantallas pequeñas */
+      padding: 10px; /* Padding más pequeño en pantallas pequeñas */
+  }
+}

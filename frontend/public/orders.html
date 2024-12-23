@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles_general.css">
+    <title>Gestión de Órdenes de Compra</title>
+</head>
+<body>
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
+        <h2>Gestión de Inventario</h2>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
+        
+        <h1>Gestion de ordenes</h1>
+
+        <div id="OrderRegisterMessage" class="message"></div>
+
+        <form id="order-form">
+            <label for="productSelect">Producto:</label>
+            <select id="productSelect" name="productSelect" required></select>
+            
+            <label for="supplier-id">Proveedor:</label>
+            <select id="supplier-id" name="Proveedor" required></select>
+            
+            <label for="total-quantity">Cantidad:</label>
+            <input type="number" id="total-quantity" placeholder="Cantidad" required min="0">
+            
+            <button type="submit">Agregar Orden</button>
+        </form>
+
+        <div id="OrderListMessage" class="message"></div>
+        <h2>Lista de Órdenes</h2>
+        <ul id="order-list"></ul>
+
+        <div id="orderModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="closeModal">&times;</span>
+                <div id="modal-order-details"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/orders.js"></script>
+</body>
+</html>

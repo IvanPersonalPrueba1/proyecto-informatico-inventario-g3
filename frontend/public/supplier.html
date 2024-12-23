@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Proveedores</title>
+    <link rel="stylesheet" href="../css/styles_general.css">
+</head>
+<body>
+    <!-- Botón para abrir el sidenav -->
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <!-- Barra lateral tipo overlay -->
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
+        <h2>Gestión de Inventario</h2>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <main class="main-content">
+        <header class="header"> 
+            <h2>Bienvenido, <span id="Welcome_username"></span></h2>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>        
+        </header>
+        
+        <h1>Gestión de Proveedores</h1>
+
+        <div class="supplier-grid">
+            <!-- Sección para registrar nuevo proveedor -->
+            <div>
+                <h3>Registrar Nuevo Proveedor</h3>
+                <form id="registerSupplierForm">
+                    <label for="name_supplier">Nombre del Proveedor:</label>
+                    <input type="text" id="name_supplier" name="name_supplier" required>
+
+                    <label for="phone">Teléfono:</label>
+                    <input type="text" id="phone" name="phone" required>
+
+                    <label for="mail">Correo Electrónico:</label>
+                    <input type="email" id="mail" name="mail" required>
+
+                    <button type="button" id="registerSupplierBtn">Registrar Proveedor</button> 
+                </form>
+                <p id="registerSupplierMessage"></p>
+            </div>
+
+            <!-- Sección para vincular productos suministrados -->
+            <div>
+                <h3>Vincular Productos Suministrados</h3>
+                <form id="linkProductForm">
+                    <label for="product_id">Productos Suministrados:</label>
+                    <select id="product_id" name="product_id" required>
+                        <!-- Opciones serán llenadas mediante JS -->
+                    </select>
+
+                    <label for="supplier_id">Proveedores:</label>
+                    <select id="supplier_id" name="supplier_id" required>
+                        <!-- Opciones serán llenadas mediante JS -->
+                    </select>
+
+                    <button type="button" id="linkSupplierBtn">Vincular</button>
+                </form>
+                <p id="linkSupplierMessage"></p>
+            </div>
+        </div>
+
+        <!-- Sección para consultar proveedores por producto -->
+        <h3>Consultar Proveedores por Producto</h3>
+        <form id="getSuppliersByProductForm">
+            <label for="consult_product_id">ID del Producto:</label>
+            <select id="consult_product_id" name="consult_product_id" required></select>
+            <button type="button" id="getSuppliersBtn">Consultar Proveedores</button>
+        </form>
+        <p id="suppliersListMessage"></p>
+
+        <!-- Modal para mostrar proveedores -->
+        <div id="supplierModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close-button">&times;</span>
+                <h3>Proveedores del Producto</h3>
+                <table id="suppliersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/supplier.js"></script>
+</body>
+</html>

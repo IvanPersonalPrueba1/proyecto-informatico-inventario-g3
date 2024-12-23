@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard de gestión de inventario para administrar stock, proveedores, productos, categorías, órdenes de compra y reportes.">
+    <link rel="stylesheet" href="../css/styles_general.css">
+    <title>Dashboard de Inventario</title>
+</head>
+<body>
+    <!-- Botón para abrir el sidenav -->
+    <button id="openSidebar" class="open-btn" aria-label="Abrir Menú">&#9776; Abrir Menú</button>
+    
+    <!-- Barra lateral tipo overlay -->
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <button id="closeSidebar" class="close-btn" aria-label="Cerrar Menú">&times;</button>
+        <h2>Gestión de Inventario</h2>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Inicio</a></li>
+                <li><a href="products.html">Gestión de Productos</a></li>
+                <li><a href="categories.html">Gestión de Categorías</a></li>
+                <li><a href="stock.html">Gestión de Stock</a></li>
+                <li><a href="supplier.html">Gestión de Proveedores</a></li>
+                <li><a href="orders.html">Órdenes de Compra</a></li>
+                <li><a href="reports.html">Reportes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <header class="header">
+            <h1>Bienvenido al Dashboard , </h1>
+            <h1><span id="Welcome_username"></span></h1>
+            <p>Administra tu inventario de manera eficiente y organizada.</p>
+            <button id="logout-btn" onclick="userLogout()">Cerrar sesión</button>
+        </header>
+        <section class="content-section">
+            <p>Selecciona una opción en la barra lateral para comenzar a gestionar tus recursos.</p>
+            <div class="quick-links">
+                <a href="stock.html" class="card">
+                    <h3>Gestíon de Stock</h3>
+                    <p>Controla los niveles de inventario.</p>
+                </a>
+                <a href="supplier.html" class="card">
+                    <h3>Proveedores</h3>
+                    <p>Gestiona tus contactos de proveedores.</p>
+                </a>
+                <a href="reports.html" class="card">
+                    <h3>Reportes</h3>
+                    <p>Genera análisis detallados.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/common/common.js"></script>
+    <script src="../js/users/dashboard.js"></script>
+</body>
+</html>
