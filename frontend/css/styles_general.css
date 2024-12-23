@@ -212,28 +212,6 @@ ul li {
   100% { transform: rotate(360deg); }
 }
 
-.notification-icon {
-  font-size: 1.5rem;
-  cursor: pointer;
-  position: relative;
-}
-
-.notification-icon::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  background-color: red;
-  border-radius: 50%;
-  display: none;
-}
-
-.notification-icon.active::after {
-  display: block;
-}
-
 /* Responsividad */
 @media screen and (max-width: 768px) {
   .sidebar {
@@ -453,3 +431,29 @@ button[onclick^="openModal"]:hover {
       padding: 10px; /* Padding más pequeño en pantallas pequeñas */
   }
 }
+
+
+/* Animación campanita Alert */
+
+.notification-icon {
+  font-size: 1.5rem;
+  cursor: default;
+  position: relative;
+  max-width: 2rem;
+  max-height: 2rem;
+  margin: 0 auto; /* Asegura que esté centrado */
+}
+
+.notification-icon.alert {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.2);
+  }
+}
+

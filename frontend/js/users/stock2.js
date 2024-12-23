@@ -169,6 +169,7 @@ function updateStock() {
     loadProducts(user_id, token); // Cargar productos en el dropdown
     loadProductsInStock(user_id, token);
     checkLowStock(user_id, token); // Recargar la lista de productos con bajo stock
+    document.getElementById('newQuantity').value = ''; // Reiniciar el valor del input de cantidad
 }
 
 function handleFetchError(error) {
